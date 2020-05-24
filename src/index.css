@@ -1,0 +1,64 @@
+.my-page{
+  width: 100%;
+  height: 100%;
+}
+
+.my-nav{
+  background: #F3F5F6;
+  height: 50px;
+  width: 100%;
+  position: sticky;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.buggernaut-title{
+    position: absolute;
+    align-self: center;
+    justify-self: center;
+}
+
+.my-icon-nav-links{
+    margin-left: 100%;
+    margin-right: 6%;
+    /*width: fit-content;*/
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    justify-self: flex-end;
+    /*float: end;*/
+    /*align-self: flex-end;*/
+}
+
+.my-container{
+    margin-top:20px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.my-container-inner{
+    margin-top:20px;
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.my-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    width: 100%;
+    height: fit-content;
+    margin-left: 20px;
+}
+
+.left-menu-list{
+    margin-top: 100px;
+}
+
+
