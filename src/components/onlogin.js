@@ -7,7 +7,8 @@ class OnLogin extends Component {
 
     state = {
         user_found: false,
-        got_response: false
+        got_response: false,
+
     }
     // setCookie(cname, cvalue, exdays) {
     //   let d = new Date();
@@ -33,6 +34,7 @@ class OnLogin extends Component {
                 }
             }).then((response) => {
                 console.log(response)
+                // alert("gott");
                 //REMEMBER TO SET COOKIE AS ACCESS TOKEN -- NOPE NOT ANYMORE, USING SESSIONS
                 if(response.data["status"] === "user created") {
                     this.setState({
@@ -59,9 +61,10 @@ class OnLogin extends Component {
 
         if(this.state.got_response){
           if(this.state.user_found){
-              return (<Redirect to="/dashboard" />);
+              return (<Redirect to="/dashboard" exact/>);
           } else {
-              return (<Redirect to="/login"/>);
+              alert("You must be an IMG member to use this app");
+              return (<Redirect to="/login" exact/>);
           }
 
         }else{
@@ -70,9 +73,6 @@ class OnLogin extends Component {
             );
         }
 
-        // return(
-        //         <h1>Loading...</h1>
-        //     );
 
     }
 }

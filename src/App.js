@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Login from './components/login';
 import Dashboard from "./components/dashboard";
 import OnLogin from './components/onlogin';
+import Project from "./components/project";
 import axios from 'axios';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 
@@ -72,7 +73,7 @@ class App extends Component {
                     <Route path="/login" exact component={Login}/>
                     <Route path="/onlogin" component={OnLogin}/>
                     <Route path="/dashboard" component={Dashboard}/>
-
+                    <Route path="/projects/:slug" component={Project}/>
                 </Switch>
             </Router>
 
