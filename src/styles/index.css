@@ -3,33 +3,13 @@
   height: 100%;
 }
 
-.my-nav{
-  background: #F3F5F6;
-  height: 50px;
-  width: 100%;
-  position: sticky;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+.a {
+    color: #282c34;
+    /*color: #ffffff !important;*/
 }
 
-.buggernaut-title{
-    position: absolute;
-    align-self: center;
-    justify-self: center;
-}
-
-.my-icon-nav-links{
-    margin-left: 100%;
-    margin-right: 6%;
-    /*width: fit-content;*/
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    justify-self: flex-end;
-    /*float: end;*/
-    /*align-self: flex-end;*/
+.my-button-text-size{
+    font-size: 1rem;
 }
 
 .my-container{
@@ -55,10 +35,19 @@
     width: 100%;
     height: fit-content;
     margin-left: 20px;
+    margin-bottom: 50px;
 }
 
 .left-menu-list{
     margin-top: 100px;
 }
+
+.my-horizontal-div{
+    display: flex;
+    flex-direction: row;
+    margin: 0px;
+}
+
+
 
 

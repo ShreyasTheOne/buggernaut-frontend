@@ -3,6 +3,9 @@ import Login from './components/login';
 import Dashboard from "./components/dashboard";
 import OnLogin from './components/onlogin';
 import Project from "./components/project";
+import addProject from "./components/addProject";
+import addIssue from "./components/addIssue.js";
+import test from "./components/test";
 import axios from 'axios';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 
@@ -43,7 +46,9 @@ class Home extends Component{
 
             if(this.state.got_response){
                     if(this.state.login_state){
-                        return <Redirect to="/dashboard" exact/>;
+                        return (
+                            <Redirect to="/dashboard"/>
+                        );
                     }else{
                         return (<Redirect to="/login"/>);
                     }
@@ -70,10 +75,13 @@ class App extends Component {
             <Router>
                 <Switch>
                     <Route path="/" exact component={Home}/>
-                    <Route path="/login" exact component={Login}/>
+                    <Route path="/login" component={Login}/>
                     <Route path="/onlogin" component={OnLogin}/>
                     <Route path="/dashboard" component={Dashboard}/>
                     <Route path="/projects/:slug" component={Project}/>
+                    <Route path="/add" component={addProject}/>
+                    <Route path="/report" component={addIssue}/>
+                    <Route path="/test" component={test}/>
                 </Switch>
             </Router>
 

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {Loader} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import queryString from 'query-string';
 
@@ -20,20 +21,22 @@ class OnLogin extends Component {
     componentDidMount() {
         let url = this.props.location.search;
         let params = queryString.parse(url);
+        console.log(params['code']);
 
-        if(!this.state.got_response){
+            // console.log("sending")
             axios({
                 method:'post',
-                url: 'http://localhost:8000/users/onlogin/',
+                url: '/users/onlogin/',
                 headers:{
                     'Content-Type':'application/json',
+
                 },
                 withCredentials: true,
                 data:{
                     code: params['code'],
                 }
             }).then((response) => {
-                console.log(response)
+                console.log(response);
                 // alert("gott");
                 //REMEMBER TO SET COOKIE AS ACCESS TOKEN -- NOPE NOT ANYMORE, USING SESSIONS
                 if(response.data["status"] === "user created") {
@@ -53,7 +56,7 @@ class OnLogin extends Component {
                     });
                 }
             });
-        }
+
 
     }
 
@@ -69,7 +72,7 @@ class OnLogin extends Component {
 
         }else{
                 return(
-                <h1>Loading...</h1>
+                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>
             );
         }
 

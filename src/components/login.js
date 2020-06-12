@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import '../styles/login.css'
+import '../styles/login.css';
+import '../styles/nav.css';
 import { Button } from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import axios from "axios";
@@ -16,12 +17,12 @@ class Login extends Component {
 
     componentDidMount() {
             axios({
-               url: "http://localhost:8000/users/test/",
+               url: "/users/test/",
                method: "get",
                withCredentials: true,
             }).then((response) => {
                console.log(response);
-                if(response.data["detail"] === "Not authenticated"){
+                if(response.data["enrolment_number"] === "Not authenticated"){
                    this.setState({
                        login_state: false,
                        got_response: true
