@@ -65,6 +65,7 @@ class OnLogin extends Component {
         if(this.state.got_response){
           if(this.state.user_found){
               return (<Redirect to="/dashboard" exact/>);
+              // return (<div>FOUND</div>);
           } else {
               alert("You must be an IMG member to use this app");
               return (<Redirect to="/login" exact/>);

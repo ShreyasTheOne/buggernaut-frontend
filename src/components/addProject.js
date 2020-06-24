@@ -11,28 +11,14 @@ class addProject extends Component {
 
     state={
         userList: [],
+        project_image: null,
         project_name: "",
         project_wiki: "",
         project_deployed: false,
         project_members: [],
         project_slug: "",
         slug_available:"",
-    }
-
-    getCookie(cname) {
-      let name = cname + "=";
-      let decodedCookie = decodeURIComponent(document.cookie);
-      let ca = decodedCookie.split(';');
-      for(let i = 0; i <ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
+        submit_loading: false,
     }
 
     componentDidMount() {
@@ -101,7 +87,7 @@ class addProject extends Component {
     uploadImage = (e) => {
         let image = e.target.files[0];
         this.setState({
-            file: image,
+            project_image: image,
         });
     }
 
@@ -111,9 +97,10 @@ class addProject extends Component {
         let projectMembers = this.state.project_members;
         let projectDeployed = this.state.project_deployed;
         let projectWiki = this.state.project_wiki;
-        let slug_available = this.state.slug_available;
+        let slugAvailable = this.state.slug_available;
 
-        if(!slug_available){
+
+        if(!slugAvailable){
             alert("A project with this slug already exists.");
             return;
         }
@@ -130,18 +117,37 @@ class addProject extends Component {
             return;
         }
 
+        if(this.state.project_image === null){
+            let del = window.confirm("You have not uploaded an image, and a default image will be set." +
+                "\nAre you ready to continue?");
+            if(!del){return;}
+        }
+        let projectImage = this.state.project_image;
+
+        let formData = new FormData();
+        formData.append('image', projectImage);
+        formData.append('title', projectName);
+        formData.append('slug', projectSlug);
+        formData.append('wiki', projectWiki);
+        formData.append('deployed', projectDeployed);
+
+        for(let mem in projectMembers){
+            formData.append("members", projectMembers[mem]);
+        }
+
+        this.setState({
+            submit_loading: true,
+        });
+
         axios({
             url: "/projects/",
             method: "post",
             withCredentials: "true",
-            data: {
-                title: projectName,
-                slug: projectSlug,
-                wiki: projectWiki,
-                members: projectMembers,
-                deployed: projectDeployed
-            }
+            data: formData,
         }).then((response) =>{
+            this.setState({
+                submit_loading: false,
+            });
             if(response["status"] === 201){
                 window.location = "http://localhost:3000/dashboard";
             } else{
@@ -161,12 +167,12 @@ class addProject extends Component {
                     <div className='my-container-inner'>
                         <div className="ui secondary vertical large menu">
                             <div className="left-menu-list">
-                                <Link to="/dashboard"><a className="item">
+                                <Link to="/dashboard" className="item">
                                     Dashboard
-                                </a></Link>
-                                <a className="item huge ">
+                                </Link>
+                                <Link to="/dashboard" className="item">
                                     My Page
-                                </a>
+                                </Link>
                             </div>
 
                         </div>
@@ -200,10 +206,8 @@ class addProject extends Component {
                                     />
                                 <div style={{display:"flex", flexDirection:"row", marginTop:"5px"}}><p style={{marginRight:"5px"}}>Slug generated:</p>
                                 {(this.state.project_slug !== "" && this.state.project_slug != null )  && (this.state.slug_available && <p style={{color:"green"}}>{this.state.project_slug} &nbsp;SLUG AVAILABLE! :)</p>
-                                    || <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG UNAVALIABLE :(</p> )}
-
+                                    || <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG UNAVAILABLE :(</p> )}
                                 </div>
-
 
 
                                 <Header as={'h3'} style={{marginBottom:"5px"}}>Project wiki:</Header>
@@ -245,7 +249,9 @@ class addProject extends Component {
                                               this.setState({project_deployed: data.checked });
                                           }}/>
 
-                                <div style={{width:"50px", marginTop:"25px"}}><Button floated="left" secondary onClick={this.submitForm.bind(this)}>Submit</Button></div>
+                                <div style={{width:"50px", marginTop:"25px"}}>
+                                   <Button floated="left" disabled={this.state.submit_loading} loading={this.state.submit_loading} secondary onClick={this.submitForm.bind(this)}>Submit</Button>
+                                </div>
 
                             </div>
 

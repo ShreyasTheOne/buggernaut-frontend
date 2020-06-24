@@ -15,7 +15,8 @@ class addIssue extends Component {
         issue_subject: "",
         issue_description: "",
         issue_priority: 2,
-        charsTitle: 300
+        charsTitle: 300,
+        submit_loading: false,
     }
 
     componentDidMount() {
@@ -82,6 +83,9 @@ class addIssue extends Component {
        if(subject===""){ alert("Subject cannot be empty"); return;}
        if(description === ""){ alert("Description cannot be empty"); return;}
 
+       this.setState({
+           submit_loading: true,
+       });
         axios({
             url: "/issues/",
             method: "post",
@@ -95,6 +99,9 @@ class addIssue extends Component {
                 subject: subject
             }
         }).then((response) =>{
+            this.setState({
+               submit_loading: false,
+           });
             if(response["status"] === 201){
                 window.location = "http://localhost:3000/dashboard";
             } else{
@@ -123,12 +130,12 @@ class addIssue extends Component {
                     <div className='my-container-inner'>
                         <div className="ui secondary vertical large menu">
                             <div className="left-menu-list">
-                                <Link to="/dashboard"><a className="item">
+                                <Link to="/dashboard" className="item">
                                     Dashboard
-                                </a></Link>
-                                <a className="item huge ">
+                                </Link>
+                               <Link to="/dashboard" className="item">
                                     My Page
-                                </a>
+                                </Link>
                             </div>
 
                         </div>
@@ -234,7 +241,12 @@ class addIssue extends Component {
                                   />
 
                                 <div style={{width:"50px", marginTop:"25px"}}>
-                                    <Button floated="left" secondary onClick={this.submitForm.bind(this)}>Submit</Button>
+                                    <Button
+                                        floated="left"
+                                        secondary
+                                        disabled={this.state.submit_loading}
+                                        loading={this.state.submit_loading}
+                                        onClick={this.submitForm.bind(this)}>Submit</Button>
                                 </div>
 
                             </div>

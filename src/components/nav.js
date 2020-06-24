@@ -60,12 +60,12 @@ class MyNavBar extends Component {
                                     <div className='buggernaut-title'>
                                         <Link to="/dashboard" className="a"><div className='ui medium header'>Buggernaut</div></Link>
                                     </div>
-                                    <div className='my-icon-nav-links'>
-                                        <div className="notif-button">
-                                            <i className="grey bell large icon"></i>
-                                        </div>
-                                        <img alt="ProfilePicture" className="ui rounded mini image" src={this.state.user_img}/>
-                                    </div>
+                                    {/*<div className='my-icon-nav-links'>*/}
+                                    {/*    <div className="notif-button">*/}
+                                    {/*        <i className="grey bell large icon"></i>*/}
+                                    {/*    </div>*/}
+                                    {/*    <img alt="ProfilePicture" className="ui rounded mini image" src={this.state.user_img}/>*/}
+                                    {/*</div>*/}
                                 </div>
 
                         );

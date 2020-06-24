@@ -1,47 +1,84 @@
-import {Divider, Input, Button, Checkbox, Dropdown, Header} from 'semantic-ui-react';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-// import {Link} from 'react-router-dom';
 import React, { Component } from 'react';
-import axios from 'axios';
-import MyNavBar from "./nav";
-import {Link} from "react-router-dom";
+import {Placeholder, Header, Icon, Button} from "semantic-ui-react";
+
 
 class test extends Component {
 
     state = { file: null }
 
-    uploadImage = (e) => {
-        let image = e.target.files[0];
-        this.setState({
-            file: image,
-        });
+    testSocket = new WebSocket("ws://127.0.0.1:8000/ws/issue/1/");
+
+    getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for(var i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
     }
 
-    handleSubmit = () => {
-        let image = this.state.file;
-        let formData = new FormData();
-        console.log(image)
-        formData.append('url', image);
-        // formData.append('name', 'file');
-
-        axios({
-            url: "/images/",
-            method: "post",
-            withCredentials: true,
-            headers: {'content-type': 'multipart/form-data'},
-            data: formData,
-        }).then((response) => {
-            console.log(response);
-        });
+    testMessage() {
+        this.testSocket.send(JSON.stringify({
+           'comment_id': 1,
+        }));
     }
+
+    componentDidMount() {
+
+        this.testSocket.addEventListener("open", () => {
+            console.log("Connection established!");
+        });
+
+        this.testSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            console.log(data);
+        };
+
+    }
+
 
     render() {
         return (
-            <div>
-                <input type="file" id="image-upload" onChange={this.uploadImage}/>
-                <input type="submit" onClick={this.handleSubmit}/>
+            <div style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
+                <div style={{display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center",  margin:"50px"}}>
+                          <Header as='h2'>
+                            <Icon name='settings' />
+                            <Header.Content>TEST PAGE</Header.Content>
+                          </Header>
+
+                          <div style={{width:"500px", marginTop:"50px"}}>
+                              <Placeholder fluid>
+                                <Placeholder.Header image>
+                                  <Placeholder.Line />
+                                  <Placeholder.Line />
+                                </Placeholder.Header>
+                                <Placeholder.Paragraph>
+                                  <Placeholder.Line />
+                                  <Placeholder.Line />
+                                  <Placeholder.Line />
+                                  <Placeholder.Line />
+                                </Placeholder.Paragraph>
+                              </Placeholder>
+                          </div>
+
+                        <Button size="large"
+                                onClick={this.testMessage.bind(this)}
+                                style={{marginTop:"30px"}}> CLICK ON ME TO GET MESSAGE</Button>
+                        <div id="xyz" style={{border:"2px #000000 solid", borderRadius:"10px", height:"500px", width:"1000px", marginTop:"30px"}} >
+
+                        </div>
+
+                </div>
             </div>
+
+
                        );
     }
 }

@@ -13,7 +13,7 @@ class Dashboard extends Component {
 
 
     componentDidMount() {
-            let leftoff = 0;
+
             axios({
                 url: "/projects/?deployed=false", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
                 method: 'get',
@@ -31,7 +31,7 @@ class Dashboard extends Component {
                         console.log(projects_list[project])
                         let col = "" + (i % 4 + 1);
                         i = i + 1;
-                        leftoff = i;
+
                         let parentDiv = document.getElementById("current-col-" + col)
 
                         let card = document.createElement('div');
@@ -89,7 +89,7 @@ class Dashboard extends Component {
                     for (let project in projects_list) {
                         let col = "" + (i % 4 + 1);
                         i = i + 1;
-                        leftoff = i;
+
                         let parentDiv = document.getElementById("deployed-col-" + col)
 
                         let card = document.createElement('div');
@@ -109,7 +109,6 @@ class Dashboard extends Component {
                         let proj_img = document.createElement('img');
                         proj_img.className = "ui massive image";
                         proj_img.src = projects_list[project]["image"];
-
 
                         let proj_name = document.createElement('div');
                         proj_name.className = "ui large header";
@@ -149,12 +148,12 @@ class Dashboard extends Component {
                     <div className='my-container-inner'>
                         <div className="ui secondary vertical large menu">
                             <div className="left-menu-list">
-                                <Link to="/dashboard"><a className="active item">
+                                <Link to="/dashboard" className="active item">
                                     Dashboard
-                                </a></Link>
-                                <Link to="/mypage"><a className="item huge ">
+                                </Link>
+                                <Link to="/dashboard" className="item">
                                     My Page
-                                </a></Link>
+                                </Link>
                             </div>
 
                         </div>
