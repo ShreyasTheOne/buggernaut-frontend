@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link, Redirect} from 'react-router-dom';
+import {Button, Dropdown, Header, Icon, Image, Popup, Statistic} from "semantic-ui-react";
 
 
 class MyNavBar extends Component {
@@ -10,7 +11,9 @@ class MyNavBar extends Component {
             got_response: false,
             enrolmentNumber: null,
             user_name: null,
-            user_img: null
+            user_img: null,
+            is_admin: null,
+
         }
 
     setCookie(cname, cvalue, exdays) {
@@ -41,7 +44,10 @@ class MyNavBar extends Component {
                     got_response: true,
                     enrolmentNumber: response.data["enrolment_number"],
                     user_name: response.data["full_name"],
-                    user_img: response.data["display_picture"]
+                    user_id: response.data["id"],
+                    user_img: response.data["display_picture"],
+                    is_admin: response.data["is_superuser"],
+
                 });
             }
 
@@ -49,6 +55,19 @@ class MyNavBar extends Component {
 
     }
 
+    logout(){
+        axios({
+            url:"/users/logout_user/",
+            method:"get",
+            withCredentials: true,
+        }).then((response) => {
+            if(response.data["status"] === "logged_out"){
+                window.location = "http://localhost:3000/login";
+            }
+
+            // console.log(response);
+        });
+    }
 
     render() {
             if(this.state.got_response){
@@ -57,15 +76,53 @@ class MyNavBar extends Component {
                         return(
 
                                 <div className="my-nav">
-                                    <div className='buggernaut-title'>
-                                        <Link to="/dashboard" className="a"><div className='ui medium header'>Buggernaut</div></Link>
+                                    <Link to="/dashboard" className="a"><div className='ui medium header buggernaut-title'>Buggernaut</div></Link>
+                                    <div className='my-icon-nav-links'>
+                                        <div className="notif-button">
+                                            <i className="grey bell large icon"></i>
+                                        </div>
+                                         <Popup
+                                            wide={"very"}
+                                            position='bottom right'
+                                            on="click"
+                                            trigger={<img style={{cursor:'pointer'}} alt="ProfilePicture" className="ui circular mini image" src={this.state.user_img}/>}
+                                        >
+                                            <Popup.Header>
+                                                <div className="profile-menu-header">
+                                                    <div className="profile-menu-header-left">
+                                                        <Image alt="ProfilePicture" circular src={this.state.user_img}/>
+                                                    </div>
+                                                    <div className="profile-menu-header-right">
+                                                        <Header className={"profile-menu-name-header"} >{this.state.user_name}</Header>
+                                                        <Header className={"profile-menu-name-header"} >{this.state.enrolmentNumber}</Header>
+                                                        <div className={"profile-menu-stats"}>
+                                                            <Statistic className="profile-menu-stats-reported" size={"mini"}>
+                                                                <Statistic.Value>5,550</Statistic.Value>
+                                                                <Statistic.Label>BUGS REPORTED</Statistic.Label>
+                                                            </Statistic>
+                                                            <Statistic className="profile-menu-stats-resolved" size={"mini"}>
+                                                                <Statistic.Value>5,550</Statistic.Value>
+                                                                <Statistic.Label>BUGS RESOLVED</Statistic.Label>
+                                                            </Statistic>
+                                                        </div>
+                                                        <div className="profile-menu-actions">
+                                                            {this.state.is_admin && <Icon size={"large"} name={"chess king"}/> }
+
+                                                            <Icon
+                                                                style={{cursor:"pointer"}}
+                                                                size={"large"}
+                                                                name={"log out"}
+                                                                onClick={this.logout.bind(this)}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Popup.Header>
+                                            <Popup.Content>
+
+                                            </Popup.Content>
+                                        </Popup>
+                                        {/*<img alt="ProfilePicture" className="ui rounded mini image" src={this.state.user_img}/>*/}
                                     </div>
-                                    {/*<div className='my-icon-nav-links'>*/}
-                                    {/*    <div className="notif-button">*/}
-                                    {/*        <i className="grey bell large icon"></i>*/}
-                                    {/*    </div>*/}
-                                    {/*    <img alt="ProfilePicture" className="ui rounded mini image" src={this.state.user_img}/>*/}
-                                    {/*</div>*/}
                                 </div>
 
                         );

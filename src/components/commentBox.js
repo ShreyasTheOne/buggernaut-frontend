@@ -46,7 +46,7 @@ class CommentBox extends Component {
 
         this.commentSocket.onmessage = (e) => {
             let data = JSON.parse(e.data);
-            console.log(data);
+            // console.log(data);
             if(data["issue"]["id"] === this.state.issue_id) {
                 this.setState({
                     comments_list: [...this.state.comments_list, data],
@@ -55,6 +55,8 @@ class CommentBox extends Component {
             }
         }
     }
+
+
 
     updateComment(div_id){
         let value = document.getElementById(div_id).value.trim();

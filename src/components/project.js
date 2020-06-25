@@ -240,7 +240,7 @@ class Project extends Component {
                                     <Link to="/dashboard" className="item">
                                             Dashboard
                                     </Link>
-                                    <Link to="/dashboard" className="item">
+                                    <Link to="/mypage" className="item">
                                             My Page
                                     </Link>
                                 </div>

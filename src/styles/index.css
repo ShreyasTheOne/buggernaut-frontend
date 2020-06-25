@@ -61,6 +61,7 @@
     margin: 0px;
 }
 
-
-
-
+.abc{
+    border-left-width: 3px;
+    border-left-style: solid ;
+}

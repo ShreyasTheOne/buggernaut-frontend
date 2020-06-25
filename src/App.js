@@ -5,6 +5,7 @@ import OnLogin from './components/onlogin';
 import Project from "./components/project";
 import addProject from "./components/addProject";
 import addIssue from "./components/addIssue.js";
+import MyPage from "./components/myPage";
 import test from "./components/test";
 import axios from 'axios';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
@@ -78,6 +79,7 @@ class App extends Component {
                     <Route path="/login" component={Login}/>
                     <Route path="/onlogin" component={OnLogin}/>
                     <Route path="/dashboard" component={Dashboard}/>
+                    <Route path="/mypage" component={MyPage}/>
                     <Route path="/projects/:slug" component={Project}/>
                     <Route path="/add" component={addProject}/>
                     <Route path="/report" component={addIssue}/>

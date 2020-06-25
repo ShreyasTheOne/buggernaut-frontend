@@ -1,3 +1,6 @@
+/* IMG BLUE: #293B52 YELLOW: #f8d16c */
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+
 .my-nav{
   background: #F9F8F8;
   height: 40px;
@@ -10,10 +13,12 @@
 }
 
 .buggernaut-title{
-    position: absolute;
-    align-self: center;
-    justify-self: center;
-    color: #ffbe00 !important;
+    /*color: #B5E2FA !important;*/
+    color: #7A6C5D !important;
+}
+
+.buggernaut-title:hover{
+    color: #041B15 !important;
 }
 
 .notif-button{
@@ -24,15 +29,56 @@
 }
 
 .my-icon-nav-links{
-    margin-left: 100%;
-    margin-right: 6%;
-    /*width: fit-content;*/
-    width: 100px;
+    position: absolute;
+    right: 10px;
+    /*width: 100px;*/
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    /*justify-self: flex-end;*/
     align-content: center;
-    /*float: end;*/
 }
+
+.profile-menu-header{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+.profile-menu-header-left{
+    grid-column-start: 1;
+    grid-column-end: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-menu-header-right{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-menu-name-header{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    font-weight: lighter !important;
+}
+
+.profile-menu-stats{
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.profile-menu-actions {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+
 

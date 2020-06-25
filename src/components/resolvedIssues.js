@@ -11,7 +11,6 @@ class ResolvedIssues extends Component {
 
     constructor(props) {
         super(props);
-        // console.log(this.props)
         let initial_state = this.props; //user_id, projectMembersList (FOR DROPDOWN LIST) , project_id, teamMemberOrAdmin
         let append_state = {
             issueActiveIndex: -1,
@@ -20,32 +19,21 @@ class ResolvedIssues extends Component {
             delete_loading: false,
         };
         this.state = {...initial_state, ...append_state};
-        // console.log({...initial_state, ...append_state});
 
     }
 
     componentDidMount() {
         this.getIssuesList();
-        // this.testSocket.addEventListener("open", () => {
-        //     console.log("Connection established!");
-        // });
-        // this.testSocket.onmessage = (e) => {
-        //
-        //     const data = JSON.parse(e.data);
-        //     console.log(data);
-        // };
     }
 
     getIssuesList(){
         let url = "/projects/"+this.state.project_id+"/issues/";
-        // alert("ho");
         axios({
             method: "get",
             url: url,
             withCredentials: true
         }).then(
             (response) => {
-                // console.log(response.data);
 
                 let list = response.data;
                 let resolved = [];
@@ -82,12 +70,10 @@ class ResolvedIssues extends Component {
             method: "delete",
             withCredentials: true,
         }).then((response)=>{
-            // console.log(response);
             if(response["status"]===204 || response["status"]===200){
                 this.setState({
                     delete_loading: false
                 });
-                // let parentNode = document.getElementById("")
                 document.getElementById(view_id).remove();
             }
         });
@@ -148,7 +134,7 @@ class ResolvedIssues extends Component {
                                                                 flexDirection:"row",
                                                                 justifyContent:"space-between"}}>
                                                                 <div style={{maxWidth:"60%", height:"fit-content"}}>
-                                                                    <Header as="h5" color="green">{issue["subject"]}</Header>
+                                                                    <Header as="h5" color="black">{issue["subject"]}</Header>
                                                                 </div>
                                                                 <div style={{display:"flex", flexDirection:"row"}}>
                                                                     <Moment date={issue["created_at"]} format={"LLL"}/>

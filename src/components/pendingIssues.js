@@ -20,7 +20,8 @@ class PendingIssues extends Component {
             resolve_loading: false,
             delete_loading: false,
             assign_to_member: null,
-            priority_colors: ["black", "red", "yellow", "teal"]
+            // priority_colors: ["#FFFFFF", "#FE5448", "#FFEE55", "#38E4AE"]
+            priority_colors: ["black", "red", "yellow", "green"]
         };
         this.state = {...initial_state, ...append_state};
     }
@@ -167,6 +168,7 @@ class PendingIssues extends Component {
                                 return (
                                     <div key={index} id={"my-issue-pending-" + index}>
                                         <Accordion.Title
+                                            // style={{background:this.state.priority_colors[issue["priority"]]}}
                                             active={this.state.issueActiveIndex === index}
                                             index={index}
                                             onClick={this.handleIssueOpen}

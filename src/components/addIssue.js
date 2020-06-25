@@ -15,7 +15,7 @@ class addIssue extends Component {
         issue_subject: "",
         issue_description: "",
         issue_priority: 2,
-        charsTitle: 300,
+        charsTitle: 100,
         submit_loading: false,
     }
 
@@ -67,7 +67,7 @@ class addIssue extends Component {
 
         this.setState({
             issue_subject: value,
-            charsTitle: 300 - value.length
+            charsTitle: 100 - value.length
         });
     }
 
@@ -133,7 +133,7 @@ class addIssue extends Component {
                                 <Link to="/dashboard" className="item">
                                     Dashboard
                                 </Link>
-                               <Link to="/dashboard" className="item">
+                               <Link to="/mypage" className="item">
                                     My Page
                                 </Link>
                             </div>
@@ -178,7 +178,7 @@ class addIssue extends Component {
                                     fluid
                                     id='issue-subject'
                                     placeholder="Subject"
-                                    maxLength={300}
+                                    maxLength={100}
                                     onChange={this.onSubjectChange.bind(this)}
                                     />
                                 <div style={{display:"flex", flexDirection:"row", marginTop:"5px"}}>
@@ -201,7 +201,6 @@ class addIssue extends Component {
                                             });
                                             console.log(this.state);
                                         } }
-
                                     />
                                 </div>
 
