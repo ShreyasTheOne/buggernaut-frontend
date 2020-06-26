@@ -3,12 +3,12 @@ import Login from './components/login';
 import Dashboard from "./components/dashboard";
 import OnLogin from './components/onlogin';
 import Project from "./components/project";
-import addProject from "./components/addProject";
-import addIssue from "./components/addIssue.js";
+import AddIssue from "./components/addIssue.js";
 import MyPage from "./components/myPage";
 import test from "./components/test";
 import axios from 'axios';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import AdminPage from "./components/adminPage";
 
 class Home extends Component{
         state = {
@@ -81,8 +81,8 @@ class App extends Component {
                     <Route path="/dashboard" component={Dashboard}/>
                     <Route path="/mypage" component={MyPage}/>
                     <Route path="/projects/:slug" component={Project}/>
-                    <Route path="/add" component={addProject}/>
-                    <Route path="/report" component={addIssue}/>
+                    <Route path="/report" component={AddIssue}/>
+                    <Route path="/admin" component={AdminPage}/>
                     <Route path="/test" component={test}/>
                 </Switch>
             </Router>

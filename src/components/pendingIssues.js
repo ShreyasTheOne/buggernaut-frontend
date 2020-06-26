@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import {Header, Icon, Button, Accordion, Popup, Dropdown} from "semantic-ui-react";
+import {Header, Icon, Button, Accordion, Popup, Dropdown, Label} from "semantic-ui-react";
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
 import 'moment-timezone';
@@ -20,8 +20,7 @@ class PendingIssues extends Component {
             resolve_loading: false,
             delete_loading: false,
             assign_to_member: null,
-            // priority_colors: ["#FFFFFF", "#FE5448", "#FFEE55", "#38E4AE"]
-            priority_colors: ["black", "red", "yellow", "green"]
+            priority_colors: ["black", "#E30F00", "#FFCC00", "#95C200"]
         };
         this.state = {...initial_state, ...append_state};
     }
@@ -29,13 +28,6 @@ class PendingIssues extends Component {
 
     componentDidMount() {
         this.getIssuesList();
-        // this.testSocket.addEventListener("open", () => {
-        //     console.log("Connection established!");
-        // });
-        // this.testSocket.onmessage = (e) => {
-        //     const data = JSON.parse(e.data);
-        //     console.log(data);
-        // };
     }
 
     assignIssue(issue_id){
@@ -157,10 +149,9 @@ class PendingIssues extends Component {
         });
     }
 
-
     render() {
         return (
-                <div id="my-current-issues-list" style={{marginTop:"30px", width:"80%"}}>
+                <div id="my-current-issues-list" style={{marginTop:"30px", width:"100%"}}>
                     <div className="ui big header">Pending Issues</div>
                     <div  className="issues-list-card">
                         <Accordion styled fluid id="pending-issues-accordion" >
@@ -180,12 +171,17 @@ class PendingIssues extends Component {
                                                 flexDirection: "row",
                                                 justifyContent: "space-between"
                                             }}>
-                                                <div style={{maxWidth: "60%", height: "fit-content"}}>
-                                                    <Header
-                                                        color={this.state.priority_colors[issue["priority"]]}
-                                                        as="h5">
-                                                            {issue["subject"]}
-                                                    </Header>
+                                                <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                                                    <div>
+                                                        <Header
+                                                            style={{color: this.state.priority_colors[issue["priority"]]}}
+                                                            as="h5">
+                                                                {issue["subject"]}
+                                                        </Header>
+                                                    </div>
+                                                    <div style={{display:"flex", flexDirection:"row", alignItems:"center", marginLeft:"15px", height: "1.5em"}}>
+                                                        <Label color={"brown"} tag>Compatibility</Label>
+                                                    </div>
                                                 </div>
                                                 <div style={{display: "flex", flexDirection: "row"}}>
                                                     <Moment date={issue["created_at"]} format={"LLL"}/>
@@ -214,7 +210,7 @@ class PendingIssues extends Component {
                                                 }}>
                                                     <div className="my-horizontal-div">
                                                         <div><strong>Reported by:</strong> {issue["reported_by"]["full_name"]}</div>
-                                                        <div style={{marginLeft:"10px"}}><strong>Assigned to:</strong> {issue["assigned_to"] === null ? "Assignment pending" : issue["assigned_to"]["full_name"]}</div>
+                                                        <div style={{marginLeft:"10px"}}><strong>Assigned to:</strong> {issue["assigned_to"] === null ? " ¯\\_(ツ)_/¯ " : issue["assigned_to"]["full_name"]}</div>
                                                     </div>
 
 

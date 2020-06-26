@@ -6,7 +6,7 @@ import axios from 'axios';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 
-class addIssue extends Component {
+class AddIssue extends Component {
 
     state={
         projectsList: [],
@@ -104,10 +104,15 @@ class addIssue extends Component {
            });
             if(response["status"] === 201){
                 window.location = "http://localhost:3000/dashboard";
-            } else{
+            } else if (response["status"]==500){
                 alert(response["status"]);
             }
             console.log(response);
+        }).catch((e) => {
+            this.setState({
+               submit_loading: false,
+            });
+            alert("Let's not go crazy with the text, words will do just fine :)");
         });
 
     }
@@ -258,4 +263,4 @@ class addIssue extends Component {
     }
 }
 
-export default addIssue;
+export default AddIssue;

@@ -25,7 +25,7 @@ class Project extends Component {
         resolved_issues: null,
         pending_issues: null,
         got_response: false,
-
+        is_admin: false,
         got_user: false,
         wiki_save_loading: false,
         wiki_saved: false,
@@ -95,8 +95,9 @@ class Project extends Component {
          }).then((response) => {
             // console.log(response.data["pk"]);
              this.setState({
-                user_id: response.data["pk"],
-                got_user: true,
+                 is_admin: response.data["is_superuser"] ,
+                 user_id: response.data["pk"],
+                 got_user: true,
             });
          });
 
@@ -220,6 +221,8 @@ class Project extends Component {
         let enrolment_number = this.getCookie("enrolment_number");
         let members = this.state.project_members_enrolment_number_list;
 
+        if(this.state.is_admin) return true;
+
         for(let elem in members){
             if(members[elem] === enrolment_number){
                 return true;
@@ -249,27 +252,27 @@ class Project extends Component {
 
                             <div className="my-content">
                                 <div style={{marginTop: "20px"}}>
-                                <div style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignContent: "flex-end",
-                                    justifyContent: "space-between"
-                                }}>
-                                  <div style={{display: "flex", flexDirection:"column", justifyContent: "flex-end"}}>
-                                      <div className="ui large header">{this.state.project_name}</div>
-                                  </div>
-                                    <Link to={{pathname: "/report", state:{project_id: this.state.project_id}}}>
-                                        <Button id="add-proj" className="ui inverted violet labeled icon button">
-                                            <i className="fitted bug icon"/>
-                                            <p className="my-button-text-size">Report Bug</p>
-                                        </Button>
-                                    </Link>
+                                    <div style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignContent: "flex-end",
+                                        justifyContent: "space-between"
+                                    }}>
+                                      <div style={{display: "flex", flexDirection:"column", justifyContent: "flex-end"}}>
+                                          <div className="ui large header">{this.state.project_name}</div>
+                                      </div>
+                                        <Link to={{pathname: "/report", state:{project_id: this.state.project_id}}}>
+                                            <Button id="add-proj" className="ui inverted violet labeled icon button">
+                                                <i className="fitted bug icon"/>
+                                                <p className="my-button-text-size">Report Bug</p>
+                                            </Button>
+                                        </Link>
 
+                                    </div>
+
+                                    <Divider/>
                                 </div>
-
-                                <Divider/>
-                            </div>
 
                                 <div style={{display:'flex', width:"60%", flexDirection:"row", justifyContent:"space-between", marginTop: "15px"}}>
                                     <div className={"ui header big"} style={{marginBottom:"0px"}}>Project Wiki</div>

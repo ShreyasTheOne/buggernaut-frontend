@@ -25,7 +25,7 @@ class MyNavBar extends Component {
 
     componentDidMount() {
          axios({
-            url: "/users/test/",
+            url: "/users/stats/",
             method: "get",
             withCredentials: true,
 
@@ -47,7 +47,8 @@ class MyNavBar extends Component {
                     user_id: response.data["id"],
                     user_img: response.data["display_picture"],
                     is_admin: response.data["is_superuser"],
-
+                    reported_count: response.data["reported"],
+                    resolved_count: response.data["resolved"],
                 });
             }
 
@@ -64,8 +65,6 @@ class MyNavBar extends Component {
             if(response.data["status"] === "logged_out"){
                 window.location = "http://localhost:3000/login";
             }
-
-            // console.log(response);
         });
     }
 
@@ -86,7 +85,7 @@ class MyNavBar extends Component {
                                             position='bottom right'
                                             on="click"
                                             trigger={<img style={{cursor:'pointer'}} alt="ProfilePicture" className="ui circular mini image" src={this.state.user_img}/>}
-                                        >
+                                         >
                                             <Popup.Header>
                                                 <div className="profile-menu-header">
                                                     <div className="profile-menu-header-left">
@@ -97,21 +96,28 @@ class MyNavBar extends Component {
                                                         <Header className={"profile-menu-name-header"} >{this.state.enrolmentNumber}</Header>
                                                         <div className={"profile-menu-stats"}>
                                                             <Statistic className="profile-menu-stats-reported" size={"mini"}>
-                                                                <Statistic.Value>5,550</Statistic.Value>
+                                                                <Statistic.Value>{this.state.reported_count}</Statistic.Value>
                                                                 <Statistic.Label>BUGS REPORTED</Statistic.Label>
                                                             </Statistic>
                                                             <Statistic className="profile-menu-stats-resolved" size={"mini"}>
-                                                                <Statistic.Value>5,550</Statistic.Value>
+                                                                <Statistic.Value>{this.state.resolved_count}</Statistic.Value>
                                                                 <Statistic.Label>BUGS RESOLVED</Statistic.Label>
                                                             </Statistic>
                                                         </div>
                                                         <div className="profile-menu-actions">
-                                                            {this.state.is_admin && <Icon size={"large"} name={"chess king"}/> }
+                                                            {this.state.is_admin &&
+                                                           <Link to="/admin">
+                                                               {/*or should I use user icon to represent admin?*/}
+                                                               <Icon
+                                                                size={"large"}
+                                                                name={"chess king"}
+                                                                className={"profile-menu-icons"}
+                                                                /> </Link> }
 
                                                             <Icon
-                                                                style={{cursor:"pointer"}}
                                                                 size={"large"}
                                                                 name={"log out"}
+                                                                className={"profile-menu-icons"}
                                                                 onClick={this.logout.bind(this)}/>
                                                         </div>
                                                     </div>
@@ -121,7 +127,6 @@ class MyNavBar extends Component {
 
                                             </Popup.Content>
                                         </Popup>
-                                        {/*<img alt="ProfilePicture" className="ui rounded mini image" src={this.state.user_img}/>*/}
                                     </div>
                                 </div>
 

@@ -65,3 +65,30 @@
     border-left-width: 3px;
     border-left-style: solid ;
 }
+
+.profile-menu-icons{
+    cursor: pointer;
+    color: #424242;
+}
+
+.profile-menu-icons:hover{
+    cursor: pointer;
+    color: #080A0D;
+}
+
+.admin-action-icons{
+    display: flex;
+    flex-direction: row;
+}
+
+.ban-icon{
+    /*margin-left: 5px !important;*/
+    margin-right: 15px !important;
+    color: #E6E6E6 !important;
+    cursor: pointer;
+}
+
+.ban-icon:hover{
+    color: #000000 !important;
+    cursor: pointer;
+}
