@@ -115,7 +115,7 @@ class ResolvedIssues extends Component {
 
     render() {
         return (
-                <div id="my-resolved-issues-list" style={{marginTop:"30px", width:"80%"}}>
+                <div id="my-resolved-issues-list" style={{marginTop:"30px", width:"100%"}}>
                     <div className="ui big header" style={{marginTop:"20px"}}>Resolved Issues</div>
                         <div  className="issues-list-card">
                             <Accordion styled fluid id="resolved-issues-accordion">
@@ -123,9 +123,10 @@ class ResolvedIssues extends Component {
                                             return (
                                                    <div key={index} id={"my-issue-resolved-"+index}>
                                                         <Accordion.Title
-                                                          active={this.state.issueActiveIndex === index}
-                                                          index={index}
-                                                          onClick={this.handleIssueOpen}
+                                                            // style={{background:"#FC9E4F"}}
+                                                            active={this.state.issueActiveIndex === index}
+                                                            index={index}
+                                                            onClick={this.handleIssueOpen}
                                                         >
                                                             <div style={{
                                                                 height:"fit-content",

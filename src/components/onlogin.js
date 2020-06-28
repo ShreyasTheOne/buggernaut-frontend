@@ -3,20 +3,16 @@ import axios from 'axios';
 import {Loader} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import queryString from 'query-string';
+import ForbiddenMessage from "./forbiddenMessage";
 
 class OnLogin extends Component {
 
     state = {
         user_found: false,
         got_response: false,
-
+        user_banned: null,
     }
-    // setCookie(cname, cvalue, exdays) {
-    //   let d = new Date();
-    //   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    //   let expires = "expires="+d.toUTCString();
-    //   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    //     }
+
 
     componentDidMount() {
         let url = this.props.location.search;
@@ -29,7 +25,6 @@ class OnLogin extends Component {
                 url: '/users/onlogin/',
                 headers:{
                     'Content-Type':'application/json',
-
                 },
                 withCredentials: true,
                 data:{
@@ -41,18 +36,26 @@ class OnLogin extends Component {
                 //REMEMBER TO SET COOKIE AS ACCESS TOKEN -- NOPE NOT ANYMORE, USING SESSIONS
                 if(response.data["status"] === "user created") {
                     this.setState({
+                        user_banned: false,
                         user_found: true,
                         got_response: true
                     });
                 } else if(response.data["status"] === "user exists") {
                     this.setState({
+                        user_banned: false,
                         user_found: true,
                         got_response: true
                     });
                 } else if(response.data["status"] === "user not in IMG"){
                     this.setState({
+                        user_banned: false,
                         user_found: false,
                         got_response: true
+                    });
+                } else if(response.data["status"] === "user banned"){
+                    this.setState({
+                       user_banned: true,
+                       got_response: true,
                     });
                 }
             });
@@ -62,19 +65,20 @@ class OnLogin extends Component {
 
     render(){
 
+        // return(<ForbiddenMessage message={"alien"}/>);
+
         if(this.state.got_response){
           if(this.state.user_found){
               return (<Redirect to="/dashboard" exact/>);
-              // return (<div>FOUND</div>);
+          } else if (this.state.user_banned){
+              return ( <ForbiddenMessage message="banned"/> );
           } else {
-              alert("You must be an IMG member to use this app");
-              return (<Redirect to="/login" exact/>);
+              return ( <ForbiddenMessage message="alien"/> );
           }
-
         }else{
-                return(
+           return(
                     <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>
-            );
+           );
         }
 
 

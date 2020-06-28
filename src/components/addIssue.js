@@ -10,6 +10,8 @@ class AddIssue extends Component {
 
     state={
         projectsList: [],
+        tagsList: [],
+        tags_selected: [],
         for_project: -1,
         user_id: "caramel",
         issue_subject: "",
@@ -48,6 +50,33 @@ class AddIssue extends Component {
             }
         );
 
+        axios({
+            url: '/tags',
+            method: "get",
+            withCredentials: true
+        }).then(
+            (response) => {
+                // console.log(response.data);
+                let arr = [];
+                const tl = response.data;
+                for(let tag in tl){
+                    let dict = {};
+                    dict["key"] = tag;
+                    dict["value"] = tl[tag]["id"];
+                    dict["text"] = tl[tag]["name"];
+                    // dict["enrolment_number"] = ul[user]["enrolment_number"];
+                    arr.push(dict);
+                }
+
+                // console.log(arr);
+                this.setState({
+                    tagsList: arr,
+                });
+            }
+        ).catch((e) => {
+            alert(e);
+        });
+
          axios({
             url: "/users/test/",
             method: "get",
@@ -77,6 +106,7 @@ class AddIssue extends Component {
        let priority = this.state.issue_priority;
        let reporter = this.state.user_id;
        let project = this.state.for_project;
+       let tags = this.state.tags_selected;
 
        if(reporter === "caramel"){alert("Sorry, we are unable to send a request. Please save your data elsewhere, refresh and try again"); return;}
        if(project === -1){ alert("Please select a project."); return;}
@@ -96,7 +126,8 @@ class AddIssue extends Component {
                 reported_by: reporter,
                 description: description,
                 priority: priority,
-                subject: subject
+                subject: subject,
+                tags: tags,
             }
         }).then((response) =>{
             this.setState({
@@ -104,7 +135,7 @@ class AddIssue extends Component {
            });
             if(response["status"] === 201){
                 window.location = "http://localhost:3000/dashboard";
-            } else if (response["status"]==500){
+            } else if (response["status"]===500){
                 alert(response["status"]);
             }
             console.log(response);
@@ -208,6 +239,22 @@ class AddIssue extends Component {
                                         } }
                                     />
                                 </div>
+
+                                <Header as={'h3'} style={{marginBottom:"5px"}}>Tags:</Header>
+                                <div>
+                                    <Dropdown
+                                          id="tags-select"
+                                          multiple
+                                          placeholder='Tags'
+                                          search selection
+                                          options={this.state.tagsList}
+                                          onChange={(event, data) =>{
+                                              // console.log(data.value);
+                                              this.setState({tags_selected: data.value });
+
+                                          }}/>
+                                </div>
+
 
                                 <Header as={'h3'} style={{marginBottom:"5px"}}>Priority:</Header>
                                 <Radio

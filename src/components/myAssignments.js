@@ -46,7 +46,7 @@ class MyAssignments extends Component {
 
         if(this.state.issues.length === 0){
             //SHOW NO ISSUES YET
-            return (<div><div style={{marginTop:"30px", width:"80%"}} className="ui big header">My Reports: No reports yet...</div></div>);
+            return (<div><div style={{marginTop:"30px", width:"80%"}} className="ui big header">No assignments yet...</div></div>);
         }
 
         return (
@@ -73,7 +73,9 @@ class MyAssignments extends Component {
                                       </Card.Header>
                                       <Card.Meta>{issue["project"]["title"]}</Card.Meta>
                                       <Card.Description>
-                                        {"<<TAGS GO HERE>>"}
+                                        {issue["tags"].map((tag, index) => {
+                                               return( <Label key={index} className="tag-label">{tag["name"]}</Label> );
+                                            } )}
                                       </Card.Description>
                                   </Card.Content>
                                 </Card>

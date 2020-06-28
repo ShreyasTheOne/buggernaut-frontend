@@ -5,13 +5,25 @@ import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import MyReports from "./myReports";
 import MyAssignments from "./myAssignments";
+import queryString from "query-string";
 
 
 class MyPage extends Component {
 
-    state = {
-        user_id: null,
-        activeMenuItem: "my-reports",
+    constructor(props) {
+        super(props);
+        let url = this.props.location.search;
+        let params = queryString.parse(url);
+        let show="my-reports";
+        if(params['show'] !== null){
+            if(params['show'] === "my-assignments"){
+                show = "my-assignments";
+            }
+        }
+        this.state = {
+             user_id: null,
+            activeMenuItem: show,
+        }
     }
 
 

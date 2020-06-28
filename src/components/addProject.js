@@ -1,11 +1,9 @@
 import {Divider, Input, Button, Checkbox, Dropdown, Header} from 'semantic-ui-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-// import {Link} from 'react-router-dom';
 import React, { Component } from 'react';
 import axios from 'axios';
-import MyNavBar from "./nav";
-import {Link} from "react-router-dom";
+
 
 class AddProject extends Component {
 
@@ -29,7 +27,6 @@ class AddProject extends Component {
             withCredentials: true
         }).then(
             (response) => {
-                // console.log(response.data);
                 let arr = [];
                 const ul = response.data;
                 for(let user in ul){
@@ -37,11 +34,9 @@ class AddProject extends Component {
                     dict["key"] = user;
                     dict["value"] = ul[user]["pk"];
                     dict["text"] = ul[user]["full_name"];
-                    // dict["enrolment_number"] = ul[user]["enrolment_number"];
                     arr.push(dict);
                 }
 
-                // console.log(arr);
                 this.setState({
                     userList: arr
                 })

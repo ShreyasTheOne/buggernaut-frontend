@@ -20,7 +20,7 @@ class PendingIssues extends Component {
             resolve_loading: false,
             delete_loading: false,
             assign_to_member: null,
-            priority_colors: ["black", "#E30F00", "#FFCC00", "#95C200"]
+            priority_colors: ["black", "#E30F00", "#FFAA00", "#95C200"] //#9FCC2E
         };
         this.state = {...initial_state, ...append_state};
     }
@@ -159,6 +159,7 @@ class PendingIssues extends Component {
                                 return (
                                     <div key={index} id={"my-issue-pending-" + index}>
                                         <Accordion.Title
+                                            // style={{background:"#FCF5C7"}}
                                             // style={{background:this.state.priority_colors[issue["priority"]]}}
                                             active={this.state.issueActiveIndex === index}
                                             index={index}
@@ -180,7 +181,10 @@ class PendingIssues extends Component {
                                                         </Header>
                                                     </div>
                                                     <div style={{display:"flex", flexDirection:"row", alignItems:"center", marginLeft:"15px", height: "1.5em"}}>
-                                                        <Label color={"brown"} tag>Compatibility</Label>
+                                                        {issue["tags"].map((tag, index) => {
+                                                           return( <Label key={index} className="tag-label">{tag["name"]}</Label> );
+                                                        } )}
+                                                        {/*<Label color={"brown"} tag>Compatibility</Label>*/}
                                                     </div>
                                                 </div>
                                                 <div style={{display: "flex", flexDirection: "row"}}>

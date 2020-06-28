@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Link, Redirect} from 'react-router-dom';
 import {Button, Dropdown, Header, Icon, Image, Popup, Statistic} from "semantic-ui-react";
+import ForbiddenMessage from "./forbiddenMessage";
 
 
 class MyNavBar extends Component {
@@ -13,7 +14,7 @@ class MyNavBar extends Component {
             user_name: null,
             user_img: null,
             is_admin: null,
-
+            user_banned: null,
         }
 
     setCookie(cname, cvalue, exdays) {
@@ -30,16 +31,24 @@ class MyNavBar extends Component {
             withCredentials: true,
 
         }).then((response) => {
-
-            if(response.data["enrolment_number"] === "Not authenticated"){
+            if(response.status === 403 || response.data["enrolment_number"] === "Not authenticated"){
                 this.setState({
                     login_state: false,
-                    got_response: true
+                    got_response: true,
+                    user_banned: false,
+                });
+
+            } else if(response.data["enrolment_number"] === "user banned") {
+                this.setState({
+                    login_state: false,
+                    got_response: true,
+                    user_banned: true
                 });
             } else {
                 this.setCookie('is_admin', response.data["is_superuser"], 14)
                 this.setCookie('enrolment_number', response.data["enrolment_number"], 14)
                 this.setState({
+                    user_banned: false,
                     login_state: true,
                     got_response: true,
                     enrolmentNumber: response.data["enrolment_number"],
@@ -52,7 +61,12 @@ class MyNavBar extends Component {
                 });
             }
 
-        });
+        }).catch( (e) => {
+             this.setState({
+                    login_state: false,
+                    got_response: true
+                });
+         });
 
     }
 
@@ -70,6 +84,10 @@ class MyNavBar extends Component {
 
     render() {
             if(this.state.got_response){
+                    if(this.state.user_banned){
+                        return (<ForbiddenMessage message={"banned"}/>);
+                    }
+
                     if(this.state.login_state){
 
                         return(
