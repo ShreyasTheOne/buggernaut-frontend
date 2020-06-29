@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link, Redirect} from 'react-router-dom';
-import {Button, Dropdown, Header, Icon, Image, Popup, Statistic} from "semantic-ui-react";
+import {Header, Icon, Image, Popup, Statistic} from "semantic-ui-react";
 import ForbiddenMessage from "./forbiddenMessage";
+import '../styles/nav.css';
 
 
 class MyNavBar extends Component {
@@ -62,6 +63,7 @@ class MyNavBar extends Component {
             }
 
         }).catch( (e) => {
+            // alert("You must be logged in to use this app");
              this.setState({
                     login_state: false,
                     got_response: true
@@ -79,6 +81,8 @@ class MyNavBar extends Component {
             if(response.data["status"] === "logged_out"){
                 window.location = "http://localhost:3000/login";
             }
+        }).catch( (e) => {
+            alert("Unable to logout.");
         });
     }
 
@@ -92,12 +96,9 @@ class MyNavBar extends Component {
 
                         return(
 
-                                <div className="my-nav">
-                                    <Link to="/dashboard" className="a"><div className='ui medium header buggernaut-title'>Buggernaut</div></Link>
-                                    <div className='my-icon-nav-links'>
-                                        <div className="notif-button">
-                                            <i className="grey bell large icon"></i>
-                                        </div>
+                                <div className="my-nav"> {/* nav.css */}
+                                    <Link to="/dashboard" className="a"><div className='ui medium header buggernaut-title'>Buggernaut</div></Link> {/* nav.css */}
+                                    <div className='my-icon-nav-links'> {/* nav.css */}
                                          <Popup
                                             wide={"very"}
                                             position='bottom right'
@@ -105,38 +106,42 @@ class MyNavBar extends Component {
                                             trigger={<img style={{cursor:'pointer'}} alt="ProfilePicture" className="ui circular mini image" src={this.state.user_img}/>}
                                          >
                                             <Popup.Header>
-                                                <div className="profile-menu-header">
-                                                    <div className="profile-menu-header-left">
+                                                <div className="profile-menu-header"> {/* nav.css */}
+                                                    <div className="profile-menu-header-left"> {/* nav.css */}
                                                         <Image alt="ProfilePicture" circular src={this.state.user_img}/>
                                                     </div>
-                                                    <div className="profile-menu-header-right">
-                                                        <Header className={"profile-menu-name-header"} >{this.state.user_name}</Header>
-                                                        <Header className={"profile-menu-name-header"} >{this.state.enrolmentNumber}</Header>
-                                                        <div className={"profile-menu-stats"}>
-                                                            <Statistic className="profile-menu-stats-reported" size={"mini"}>
+                                                    <div className="profile-menu-header-right"> {/* nav.css */}
+                                                        <Header className={"profile-menu-name-header"} >{this.state.user_name}</Header> {/* nav.css */}
+                                                        <Header className={"profile-menu-name-header"} >{this.state.enrolmentNumber}</Header> {/* nav.css */}
+                                                        <div className={"profile-menu-stats"}> {/* nav.css */}
+                                                            <Statistic className="profile-menu-stats-reported" size={"mini"}> {/* nav.css */}
                                                                 <Statistic.Value>{this.state.reported_count}</Statistic.Value>
                                                                 <Statistic.Label>BUGS REPORTED</Statistic.Label>
                                                             </Statistic>
-                                                            <Statistic className="profile-menu-stats-resolved" size={"mini"}>
+                                                            <Statistic className="profile-menu-stats-resolved" size={"mini"}> {/* nav.css */}
                                                                 <Statistic.Value>{this.state.resolved_count}</Statistic.Value>
                                                                 <Statistic.Label>BUGS RESOLVED</Statistic.Label>
                                                             </Statistic>
                                                         </div>
-                                                        <div className="profile-menu-actions">
+                                                        <div className="profile-menu-actions"> {/* nav.css */}
                                                             {this.state.is_admin &&
-                                                           <Link to="/admin">
-                                                               {/*or should I use user icon to represent admin?*/}
-                                                               <Icon
-                                                                size={"large"}
-                                                                name={"chess king"}
-                                                                className={"profile-menu-icons"}
-                                                                /> </Link> }
+                                                               <Link to="/admin">
+                                                                   {/*or should I use user icon to represent admin?*/}
+                                                                   <Icon
+                                                                    size={"large"}
+                                                                    name={"chess king"}
+                                                                    className={"profile-menu-icons"}
+                                                                    />
+                                                                   {/* nav.css */}
+                                                               </Link>
+                                                            }
 
                                                             <Icon
                                                                 size={"large"}
                                                                 name={"log out"}
                                                                 className={"profile-menu-icons"}
-                                                                onClick={this.logout.bind(this)}/>
+                                                                onClick={this.logout.bind(this)}
+                                                            /> {/* nav.css */}
                                                         </div>
                                                     </div>
                                                 </div>

@@ -1,9 +1,9 @@
-import {Divider, Input, Button, Checkbox, Dropdown, Header} from 'semantic-ui-react';
+import {Input, Button, Checkbox, Dropdown, Header} from 'semantic-ui-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import '../styles/form.css';
 
 class AddProject extends Component {
 
@@ -120,7 +120,7 @@ class AddProject extends Component {
         let projectImage = this.state.project_image;
 
         let formData = new FormData();
-        formData.append('image', projectImage);
+        if(projectImage !== null) formData.append('image', projectImage);
         formData.append('title', projectName);
         formData.append('slug', projectSlug);
         formData.append('wiki', projectWiki);
@@ -149,13 +149,15 @@ class AddProject extends Component {
                 alert(response["status"]);
             }
             console.log(response);
+        }).catch((e) => {
+            alert(e);
         });
 
     }
 
     render() {
         return (
-            <div style={{marginTop:"30px", width:"60%", display:"flex", flexDirection:"column"}}>
+            <div className="form-content"> {/* index.css */}
 
                 <Header as={'h3'} style={{marginBottom:"5px"}}>Project name:</Header>
                 <Input
@@ -164,28 +166,30 @@ class AddProject extends Component {
                     placeholder="Buggernaut"
                     onChange={this.onProjectNameChange.bind(this)}
                     />
-                <div style={{display:"flex", flexDirection:"row", marginTop:"5px"}}><p style={{marginRight:"5px"}}>Slug generated:</p>
-                {(this.state.project_slug !== "" && this.state.project_slug != null )  && (this.state.slug_available && <p style={{color:"green"}}>{this.state.project_slug} &nbsp;SLUG AVAILABLE! :)</p>
-                    || <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG UNAVAILABLE :(</p> )}
+
+                <div className="input-meta-data"> {/* index.css */}
+                    <p style={{marginRight:"5px"}}>Slug generated:</p>
+                    {(this.state.project_slug !== "" && this.state.project_slug != null )  &&
+                        (this.state.slug_available && <p style={{color:"green"}}>{this.state.project_slug} &nbsp;SLUG AVAILABLE! :)</p>
+                    || <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG UNAVAILABLE :(</p>)}
                 </div>
 
 
+
                 <Header as={'h3'} style={{marginBottom:"5px"}}>Project wiki:</Header>
-                <div style={{border: "1px solid #cad8de", borderRadius: "5px", marginBottom:"20px"}}>
-                <CKEditor
-                    id="project-wiki"
-                    editor={InlineEditor}
-                    config={ {placeholder: "Instructions on how to use the app...", height: "100px" }}
-                    onChange={ ( event, editor ) => {
-                           const data = editor.getData();
+                <div className="form-ckeditor-input"> {/* index.css*/}
+                    <CKEditor
+                        id="project-wiki"
+                        editor={InlineEditor}
+                        config={ {placeholder: "Instructions on how to use the app...", height: "100px" }}
+                        onChange={ ( event, editor ) => {
+                               const data = editor.getData();
+                                this.setState({
+                                    project_wiki: data
+                                });
+                            } }
 
-                            this.setState({
-                                project_wiki: data
-                            });
-                            console.log(this.state);
-                        } }
-
-                    />
+                        />
                 </div>
 
 
@@ -197,8 +201,8 @@ class AddProject extends Component {
                           onChange={(event, data) =>{
                               // console.log(data.value);
                               this.setState({project_members: data.value });
-
                           }}/>
+
 
                 <Header style={{marginTop:"25px"}} as={'h3'}>Upload Image:</Header>
                 <input style={{marginTop:"0px"}} type="file" id="image-upload" onChange={this.uploadImage}/>
@@ -210,8 +214,14 @@ class AddProject extends Component {
                               this.setState({project_deployed: data.checked });
                           }}/>
 
-                <div style={{width:"50px", marginTop:"25px"}}>
-                   <Button floated="left" disabled={this.state.submit_loading} loading={this.state.submit_loading} secondary onClick={this.submitForm.bind(this)}>Submit</Button>
+                <div className="form-submit-button">
+                   <Button
+                       floated="left"
+                       disabled={this.state.submit_loading}
+                       loading={this.state.submit_loading}
+                       secondary onClick={this.submitForm.bind(this)}>
+                       Submit
+                   </Button>
                 </div>
 
             </div>

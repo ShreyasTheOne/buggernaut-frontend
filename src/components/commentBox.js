@@ -3,19 +3,16 @@ import axios from 'axios';
 import {Button, Checkbox, Comment, Divider, Header, Icon, Input} from 'semantic-ui-react';
 import Moment from 'react-moment';
 import 'moment-timezone';
-// import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import '../styles/commentBox.css';
 
 class CommentBox extends Component {
     constructor(props) {
         super(props);
         let initial_state = this.props; //issue_id, user_id, project_id
         let append_state = {comments_list: null, comment_text: null, comment_submit_loading:false, comment_error: false, comments_hide: false, };
-
         this.commentSocket = new WebSocket("ws://127.0.0.1:8000/ws/projects/"+initial_state["project_id"]+"/comments/");
         this.state = {...initial_state, ...append_state};
     }
-
-
 
     componentDidMount() {
         let url = "/issues/"+this.state.issue_id+"/comments/";
@@ -25,19 +22,18 @@ class CommentBox extends Component {
             withCredentials: true
         }).then((response) => {
             let comments = response.data;
-            // console.log(comments);
             this.setState({
                 comments_list: comments,
             });
             //SUBMIT ON ENTER PRESSED
             let comment_field = document.getElementById("comment-input-"+this.state.issue_id);
             comment_field.addEventListener("keyup",  (e) => {
-                // console.log(e.key);
                 if(e.key === "Enter"){
                     this.sendComment("comment-input-"+this.state.issue_id);
                 }
             });
-
+        }).catch( (e) => {
+            alert(e);
         });
 
         this.commentSocket.addEventListener("open", ()=> {
@@ -46,17 +42,13 @@ class CommentBox extends Component {
 
         this.commentSocket.onmessage = (e) => {
             let data = JSON.parse(e.data);
-            // console.log(data);
             if(data["issue"]["id"] === this.state.issue_id) {
                 this.setState({
                     comments_list: [...this.state.comments_list, data],
-
                 });
             }
         }
     }
-
-
 
     updateComment(div_id){
         let value = document.getElementById(div_id).value.trim();
@@ -101,15 +93,21 @@ class CommentBox extends Component {
             this.commentSocket.send(JSON.stringify({
                 comment_id: response.data["id"]
             }));
+        }).catch( (e) => {
+            alert(e);
         });
     }
 
     render() {
         if(this.state.comments_list === null) {
-            return (<div className="comments-list-card"><Header as={"h3"}>Loading comments...</Header></div>);
+            return (
+                <div className="comments-list-card"> {/* commentBox.css */}
+                    <Header as={"h3"}>Loading comments...</Header>
+                </div>
+            );
         } else if(this.state.comments_list.length === 0) {
             return (
-                <div className="comments-list-card">
+                <div className="comments-list-card"> {/* commentBox.css */}
                     <Header as={"h4"}>No comments yet!</Header>
                      <Input
                         id={"comment-input-"+this.state.issue_id}
@@ -129,9 +127,9 @@ class CommentBox extends Component {
         }
 
         return (
-            <div className="comments-list-card">
-                <div style={{display: "flex", flexDirection:"row", marginTop:"5px"}}>
-                    <Header as='h3' style={{ marginRight:"15px", marginBottom:"0px"}}>Comments</Header>
+            <div className="comments-list-card"> {/* commentBox.css */}
+                <div className="comments-header-div"> {/* commentBox.css */}
+                    <Header as='h3' className="comments-header">Comments</Header>  {/* commentBox.css */}
                     <Checkbox
                         label='Hide'
                         onChange={(e, {checked}) => {
@@ -149,8 +147,8 @@ class CommentBox extends Component {
                                 <div key={index}>
                                     <Comment >
                                       <Comment.Avatar src={comment["commented_by"]["display_picture"]} />
-                                      <Comment.Content style={{paddingTop:"0px", paddingLeft:"5px"}}>
-                                        <div className="my-horizontal-div">
+                                      <Comment.Content className="comment-content"> {/* commentBox.css */}
+                                        <div className="my-horizontal-div"> {/* index.css */}
                                             <Comment.Author>{comment["commented_by"]["full_name"]}</Comment.Author>
                                             <Comment.Metadata>
                                                 <Moment fromNow date={comment["created_at"]}/>

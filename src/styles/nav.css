@@ -2,18 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
 
 .my-nav{
-  background: #F9F8F8;
-  height: 40px;
-  width: 100%;
-  position: sticky;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+    background: #F9F8F8;
+    height: 40px;
+    width: 100%;
+    position: sticky !important;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .buggernaut-title{
-    /*color: #B5E2FA !important;*/
     color: #7A6C5D !important;
 }
 
@@ -21,7 +22,7 @@
     color: #041B15 !important;
 }
 
-.notif-button{
+.notification-button{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -75,10 +76,17 @@
 
 .profile-menu-actions {
     width: 30%;
-
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+@media only screen and (max-width: 1250px){
+    .my-nav{
+        height: 50px;
+        justify-content: flex-start;
+        padding: 0px 10px;
+    }
 }
 
 

@@ -9,14 +9,23 @@ class ProjectsList extends Component {
         super(props);
         let initial_state = this.props;
         let append_state ={
-            projects_list: null
+            projects_list: null,
+            isMobile: window.innerWidth <= 800,
         };
         this.state = {...initial_state, ...append_state};
     }
 
+    onWindowResize(){
+       this.setState({ isMobile: window.innerWidth <= 480 });
+    }
 
     componentDidMount() {
-          this.getProjectsList();
+        window.addEventListener('resize', this.onWindowResize.bind(this));
+        this.getProjectsList();
+    }
+
+    componentWillMount() {
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
     }
 
     getProjectsList(){
@@ -37,7 +46,9 @@ class ProjectsList extends Component {
                         projects_list: response.data,
                     });
                 }
-            );
+            ).catch( (e) => {
+                alert(e);
+            });
 
     }
 
@@ -50,12 +61,14 @@ class ProjectsList extends Component {
 
         if(this.state.projects_list.length === 0){
             //SHOW NO ISSUES YET
-            return (<div><div style={{marginTop:"30px", width:"80%"}} className="ui big header">No projects yet...</div></div>);
+            return (
+                <div className="ui big header none-available">No projects yet...</div> // {/* index.css */}
+            );
         }
 
         return (
                 <div id={this.state.project_status+"-projects-list"} style={{marginTop:"30px"}}>
-                    <Card.Group itemsPerRow={4}>
+                    <Card.Group itemsPerRow={(this.state.isMobile) ? 1:4}> {/* CHANGE COLUMNS IN RESPONSIVE MODE*/}
                         { this.state.projects_list.map( (project, index) => {
                             return (
                                 <Card key={index} href={"http://localhost:3000/projects/" + project["slug"]}>

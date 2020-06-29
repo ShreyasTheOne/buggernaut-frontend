@@ -1,0 +1,79 @@
+
+.issues-box{
+    margin-top: 30px;
+    width: 100%;
+}
+
+.issues-list-card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-radius: 0px;
+}
+
+.issue-title-div{
+    height: fit-content;
+    padding: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.issue-tags-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 15px;
+    height: 1.5em;
+}
+
+.tag-label{
+    background:#B1DDF1 !important;
+    color:#210F04 !important;
+    border-radius:1.5em !important;
+}
+
+.issue-content-div{
+    display: flex;
+    flex-direction: column;
+}
+
+.issue-meta-data{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.assigned-to-div{
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+}
+
+.reported-by-div, .issue-buttons-div{
+    display: flex;
+    flex-direction: row;
+}
+
+@media only screen and (max-width: 1250px) {
+    .tag-label{
+        margin-bottom: 2px !important ;
+    }
+
+    .issue-published-time, .issue-tags-div{
+        display: none !important;
+    }
+
+    .assigned-to-div{
+        margin-left: 20px;
+        flex-direction: column;
+    }
+
+    .reported-by-div, .issue-buttons-div{
+        flex-direction: column;
+    }
+
+    .issue-action-button{
+        margin-top: 2px !important;
+    }
+}

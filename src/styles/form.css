@@ -1,0 +1,31 @@
+
+/*RESPONSIFIED*/
+.form-content{
+    margin-top: 30px;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input-meta-data{
+    display: flex;
+    flex-direction: row;
+    margin-top: 5px;
+}
+
+.form-ckeditor-input{
+    border: 1px solid #cad8de;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.form-submit-button{
+    width: 50px;
+    margin-top: 25px;
+}
+
+@media only screen and (max-width: 1250px){
+    .form-content{
+        width: 100%;
+    }
+}

@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import {Link} from "react-router-dom";
+import {Header} from "semantic-ui-react";
+import MyNavBar from "./nav";
 
 
 class ForbiddenMessage extends Component {
@@ -12,21 +15,43 @@ class ForbiddenMessage extends Component {
     }
 
     redirect(){
-        window.location= "http://localhost:3000/login";
+        if(this.state.message === "project-not-found"){
+            window.location= "http://localhost:3000/dashboard";
+        } else {
+
+        }
+
     }
 
     componentDidMount() {
-        setTimeout(() => {this.redirect()}, 5000);
+        if(this.state.message !== "project-not-found"){
+            setTimeout(() => {window.location= "http://localhost:3000/login"}, 5000);
+        }
     }
 
     render(){
-        return(
-            <div className="banned-page">
-                {this.state.message === "banned" && <div className="banned-message">You have been banned from entering Buggernaut <span aria-label="sad emoji">😕</span></div>}
-                {this.state.message === "alien" && <div className="banned-message">Alien detected <span aria-label="sad emoji">👾</span></div>}
 
-                <div>Redirecting to Login page in 5 seconds...</div>
+        if(this.state.message === "project-not-found"){
+            return(
+                <div>
+                <MyNavBar/>
+                <div className="banned-page">
+                    <Header size={"huge"}>404 PAGE NOT FOUND!</Header>
+                    <div className="banned-message">The requested project does not exist. Please check your URL.</div>
+                    <Link style={{cursor:"pointer"}} to="/dashboard">Click here to view all projects</Link>
+                </div>
+                </div>
+            );
+        }
+
+        return(
+            <div>
+            <MyNavBar/>
+            <div className="banned-page"> {/* index.css */}
+                {this.state.message === "banned" && <div className="banned-message">You have been banned from entering Buggernaut <span aria-label="sad emoji">😕</span></div>}
+                {this.state.message === "alien" && <div className="banned-message">Alien detected <span aria-label="alien emoji">👾</span></div>}
             </div>
+                </div>
         );
 
     }

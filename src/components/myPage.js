@@ -39,6 +39,8 @@ class MyPage extends Component {
                 user_id: response.data["pk"],
                 got_user: true,
             });
+         }).catch( (e) => {
+            alert(e);
          });
     }
 
@@ -54,10 +56,10 @@ class MyPage extends Component {
             <div className="my-page">
                 <MyNavBar/>
 
-                <div className="my-container">
-                    <div className='my-container-inner'>
-                        <div className="ui secondary vertical large menu">
-                            <div className="left-menu-list">
+                <div className="my-container"> {/* index.css */}
+                    <div className='my-container-inner'> {/* index.css */}
+                        <div className="ui secondary vertical large menu left-menu-list">
+                            <div> {/* index.css */}
                                 <Link to="/dashboard" className="item">
                                     Dashboard
                                 </Link>
@@ -65,10 +67,9 @@ class MyPage extends Component {
                                     My Page
                                 </Link>
                             </div>
+                         </div>
 
-                        </div>
-
-                        <div className="my-content">
+                        <div className="my-content"> {/* index.css */}
                             <div style={{marginTop: "30px"}}>
                                 <Menu pointing secondary>
                                     <Menu.Item

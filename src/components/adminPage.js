@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Divider, Button, Header, Menu, Table, Loader, Card, Image, Icon, Popup, Dropdown} from 'semantic-ui-react';
+import {Divider, Button, Table, Loader} from 'semantic-ui-react';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
-import ProjectsList from "./projectsList";
-import AddProject from "./addProject";
 
 
 class AdminPage extends Component {
@@ -51,7 +49,9 @@ class AdminPage extends Component {
                     userList: response["data"]
                 });
             }
-        );
+        ).catch( (e) => {
+            alert(e);
+        });
     }
 
     userBanToggle(user_id){
@@ -96,6 +96,8 @@ class AdminPage extends Component {
             withCredentials: true,
         }).then((response) => {
             window.location.reload();
+        }).catch( (e) => {
+            alert(e);
         });
     }
 
@@ -111,8 +113,8 @@ class AdminPage extends Component {
                     <MyNavBar/>
                     <div className="my-container">
                         <div className='my-container-inner'>
-                            <div className="ui secondary vertical large menu">
-                                <div className="left-menu-list">
+                            <div className="ui secondary vertical large menu left-menu-list">
+                                <div>
                                     <Link to="/dashboard" className="item">
                                         Dashboard
                                     </Link>
@@ -146,8 +148,8 @@ class AdminPage extends Component {
 
                 <div className="my-container">
                     <div className='my-container-inner'>
-                        <div className="ui secondary vertical large menu">
-                            <div className="left-menu-list">
+                        <div className="ui secondary vertical large menu left-menu-list">
+                            <div>
                                 <Link to="/dashboard" className="item">
                                     Dashboard
                                 </Link>
@@ -165,7 +167,7 @@ class AdminPage extends Component {
 
                             {this.state.userList === null && <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>}
                             {this.state.userList !== null &&
-                                <Table basic='very' collapsing padded style={{width:"50%"}}>
+                                <Table basic='very' collapsing padded className="admin-table">{/* index.css */}
                                 <Table.Header>
                                   <Table.Row>
                                     <Table.HeaderCell>Name</Table.HeaderCell>

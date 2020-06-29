@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Divider, Button, Header, Menu} from 'semantic-ui-react';
+import {Menu} from 'semantic-ui-react';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import ProjectsList from "./projectsList";
@@ -19,28 +19,32 @@ class Dashboard extends Component {
 
     componentDidMount() {
 
-            axios({
-                url: "/projects/?deployed=false", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
-                method: 'get',
-                withCredentials: true,
+        axios({
+            url: "/projects/?deployed=false", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
+            method: 'get',
+            withCredentials: true,
 
-            }).then((response) => {
-                    this.setState({
-                        current_projects: response.data ,
-                    });
-                }
-            );
+        }).then((response) => {
+                this.setState({
+                    current_projects: response.data ,
+                });
+            }
+        ).catch( (e) => {
+            alert(e);
+        });
 
-            axios({
-                url: "/projects/?deployed=true", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
-                method: 'get',
-                withCredentials: true,
-            }).then((response) => {
-                    this.setState({
-                        deployed_projects: response.data,
-                    });
-                }
-            );
+        axios({
+            url: "/projects/?deployed=true", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
+            method: 'get',
+            withCredentials: true,
+        }).then((response) => {
+                this.setState({
+                    deployed_projects: response.data,
+                });
+            }
+        ).catch( (e) => {
+            alert(e);
+        });
 
 
     }
@@ -53,8 +57,8 @@ class Dashboard extends Component {
 
                 <div className="my-container">
                     <div className='my-container-inner'>
-                        <div className="ui secondary vertical large menu">
-                            <div className="left-menu-list">
+                        <div className="ui secondary vertical large menu left-menu-list">
+                            <div>
                                 <Link to="/dashboard" className="active item">
                                     Dashboard
                                 </Link>
@@ -66,38 +70,38 @@ class Dashboard extends Component {
                         </div>
 
                         <div className="my-content">
-                            <div style={{marginTop: "20px"}}>
-                                <Menu pointing secondary>
-                                    <Menu.Item
-                                        name="current-projects"
-                                        active={this.state.activeMenuItem === "current-projects"}
-                                        onClick={() => {
-                                            this.setState({
-                                                activeMenuItem: "current-projects"
-                                            });
-                                        }}
-                                    />
-                                    <Menu.Item
-                                        name="deployed-projects"
-                                        active={this.state.activeMenuItem === "deployed-projects"}
-                                        onClick={() => {
-                                            this.setState({
-                                                activeMenuItem: "deployed-projects"
-                                            });
-                                        }}
-                                    />
-                                    <Menu.Menu position="right">
+                            <div className="dashboard-content">{/* index.css */}
+                                    <Menu pointing secondary >{/* index.css */}
                                         <Menu.Item
-                                          name='add-project'
-                                          active={this.state.activeMenuItem === 'add-project'}
-                                          onClick={() => {
+                                            name="current-projects"
+                                            active={this.state.activeMenuItem === "current-projects"}
+                                            onClick={() => {
                                                 this.setState({
-                                                    activeMenuItem: "add-project"
+                                                    activeMenuItem: "current-projects"
                                                 });
                                             }}
                                         />
-                                    </Menu.Menu>
-                                </Menu>
+                                        <Menu.Item
+                                            name="deployed-projects"
+                                            active={this.state.activeMenuItem === "deployed-projects"}
+                                            onClick={() => {
+                                                this.setState({
+                                                    activeMenuItem: "deployed-projects"
+                                                });
+                                            }}
+                                        />
+                                        <Menu.Menu position="right">
+                                            <Menu.Item
+                                              name='add-project'
+                                              active={this.state.activeMenuItem === 'add-project'}
+                                              onClick={() => {
+                                                    this.setState({
+                                                        activeMenuItem: "add-project"
+                                                    });
+                                                }}
+                                            />
+                                        </Menu.Menu>
+                                    </Menu>
 
                                 {this.state.activeMenuItem === "current-projects" && <ProjectsList project_status="current"/>}
                                 {this.state.activeMenuItem === "deployed-projects" && <ProjectsList project_status="deployed"/>}

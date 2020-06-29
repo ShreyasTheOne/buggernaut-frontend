@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import {Header, Icon, Button, Accordion} from "semantic-ui-react";
+import {Header, Icon, Button, Accordion, Label, Loader} from "semantic-ui-react";
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
+import '../styles/issues.css';
 
 
 class ResolvedIssues extends Component {
@@ -14,7 +15,7 @@ class ResolvedIssues extends Component {
         let initial_state = this.props; //user_id, projectMembersList (FOR DROPDOWN LIST) , project_id, teamMemberOrAdmin
         let append_state = {
             issueActiveIndex: -1,
-            resolved_issues: [],
+            resolved_issues: null,
             reopen_loading: false,
             delete_loading: false,
         };
@@ -47,7 +48,9 @@ class ResolvedIssues extends Component {
                     resolved_issues: resolved,
                 });
             }
-        );
+        ).catch( (e) => {
+            alert(e);
+        });
     }
 
     handleIssueOpen = (e, titleProps) => {
@@ -76,6 +79,8 @@ class ResolvedIssues extends Component {
                 });
                 document.getElementById(view_id).remove();
             }
+        }).catch( (e) => {
+            alert(e);
         });
     }
 
@@ -109,44 +114,68 @@ class ResolvedIssues extends Component {
                 document.getElementById(view_id).remove();
                 window.location.reload();
             }
+        }).catch( (e) => {
+            alert(e);
         });
     }
 
 
     render() {
+         if(this.state.resolved_issues === null){
+            return(
+               <div id="my-current-issues-list" className="issues-box"> {/* issues.css */}
+                    <div className="ui big header">Resolved Issues</div>
+                    <div className="my-loader-div"><Loader active inline size="small"/></div>
+                </div>
+           );
+        } else if (this.state.resolved_issues.length === 0){
+            return(
+                <div id="my-current-issues-list" className="issues-box"> {/* issues.css */}
+                    <div className="ui big header">Resolved Issues</div>
+                    <p style={{alignSelf:"center", fontSize:"1.1em"}}>No resolved issues <span aria-label="cowboy hat emoji">🤠</span> </p>
+                </div>
+            );
+        }
+
         return (
-                <div id="my-resolved-issues-list" style={{marginTop:"30px", width:"100%"}}>
+                <div id="my-resolved-issues-list" className="issues-box"> {/* issues.css */}
                     <div className="ui big header" style={{marginTop:"20px"}}>Resolved Issues</div>
-                        <div  className="issues-list-card">
+                        <div  className="issues-list-card"> {/* issues.css */}
                             <Accordion styled fluid id="resolved-issues-accordion">
                                         {this.state.resolved_issues.map((issue, index) => {
                                             return (
                                                    <div key={index} id={"my-issue-resolved-"+index}>
                                                         <Accordion.Title
-                                                            // style={{background:"#FC9E4F"}}
                                                             active={this.state.issueActiveIndex === index}
                                                             index={index}
                                                             onClick={this.handleIssueOpen}
                                                         >
-                                                            <div style={{
-                                                                height:"fit-content",
-                                                                padding:"0px",
-                                                                display:"flex",
-                                                                flexDirection:"row",
-                                                                justifyContent:"space-between"}}>
-                                                                <div style={{maxWidth:"60%", height:"fit-content"}}>
-                                                                    <Header as="h5" color="black">{issue["subject"]}</Header>
+                                                            <div className="issue-title-div"> {/* issues.css */}
+                                                                <div className="my-horizontal-div">{/* index.css */}
+                                                                    <div>
+                                                                        <Header as="h5">
+                                                                                {issue["subject"]}
+                                                                        </Header>
+                                                                    </div>
+                                                                    <div className="issue-tags-div"> {/* issues.css */}
+                                                                        {issue["tags"].map((tag, index) => {
+                                                                           return(
+                                                                               <Label key={index} className="tag-label">{tag["name"]}</Label> // {/* issues.css */}
+                                                                            );
+                                                                        } )}
+                                                                    </div>
                                                                 </div>
-                                                                <div style={{display:"flex", flexDirection:"row"}}>
-                                                                    <Moment date={issue["created_at"]} format={"LLL"}/>
-                                                                    <div>{ ((this.state.issueActiveIndex === index) && <Icon name='angle up' />)
-                                                                            || <Icon name='angle down'/>}</div>
+                                                                <div className="my-horizontal-div"> {/* index.css */}
+                                                                    <Moment className="issue-published-time" date={issue["created_at"]} format={"LLL"}/> {/* issues.css */}
+                                                                    <div>{((this.state.issueActiveIndex === index) &&
+                                                                        <Icon name='angle up'/>)
+                                                                    || <Icon name='angle down'/>}</div>
                                                                 </div>
                                                             </div>
                                                         </Accordion.Title>
 
                                                         <Accordion.Content active={this.state.issueActiveIndex === index}>
-                                                          <div style={{display:"flex", flexDirection:"column"}}>
+                                                          <div className="issue-content-div"> {/* issues.css */}
 
                                                               <CKEditor
                                                                 editor={InlineEditor}
@@ -154,12 +183,7 @@ class ResolvedIssues extends Component {
                                                                 disabled={true}
                                                                />
 
-                                                              <div style={{
-                                                                  display:"flex",
-                                                                  flexDirection:"row",
-                                                                  justifyContent:"space-between",
-                                                                  marginTop:"20px",
-                                                                  marginBottom: "20px"}}>
+                                                              <div className="issue-meta-data">
                                                                   <div className="my-horizontal-div">
                                                                       <div><strong>Reported by:</strong> {issue["reported_by"]["full_name"]}</div>
                                                                       <div style={{marginLeft:"10px"}}><strong>Resolved by:</strong> {issue["resolved_by"]["full_name"]}</div>

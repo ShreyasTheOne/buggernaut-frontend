@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import {Link} from 'react-router-dom';
-import {Divider, Popup, Button, Loader, Dropdown} from "semantic-ui-react";
+import {Divider, Popup, Button, Loader, Dropdown, Icon} from "semantic-ui-react";
 import MyNavBar from "./nav";
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
@@ -9,14 +9,19 @@ import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import PendingIssues from "./pendingIssues";
 import ResolvedIssues from "./resolvedIssues";
 
+import '../styles/project.css';
+import ForbiddenMessage from "./forbiddenMessage";
+
 class Project extends Component {
 
     state = {
         user_id: null,
-        project_found: false,
+        project_found: null,
         project_name: null,
         project_wiki: null,
         project_id: null,
+        project_deployed: false,
+        deploy_loading: false,
         project_members: [],
         project_members_enrolment_number_list:[],
         project_members_id_list:[],
@@ -47,15 +52,13 @@ class Project extends Component {
                     project_found: false
                 });
             } else{
-
                 let members = response.data[0]["members"];
-                let mem_nums = [], mem_ids=[], mem_names=[];
+                let mem_nums = [], mem_ids=[];
                 let mems = [];
                 let arr = [];
                 for( let mem in members){
                     mems.push(members[mem]);
                     mem_ids.push(members[mem]["id"]);
-                    mem_names.push(members[mem]["full_name"])
                     mem_nums.push(members[mem]["enrolment_number"]);
 
                     let dict = {};
@@ -64,15 +67,14 @@ class Project extends Component {
                     dict["text"] = members[mem]["full_name"];
                     arr.push(dict);
                 }
-                // console.log("mems of proj");
-                // console.log(arr);
+
                 this.setState({
-                    // got_response: true,
                     project_members_dropdown: arr,
                     project_members: mems,
                     project_members_enrolment_number_list: mem_nums,
                     project_members_id_list: mem_ids,
                     project_found: true,
+                    project_deployed: data[0]["deployed"],
                     project_name: data[0]["title"],
                     project_wiki: data[0]["wiki"],
                     project_id: data[0]["id"],
@@ -81,6 +83,8 @@ class Project extends Component {
             }
 
             // console.log(this.state)
+        }).catch( (e) => {
+            alert(e);
         });
     }
 
@@ -93,7 +97,6 @@ class Project extends Component {
             withCredentials: true,
 
          }).then((response) => {
-            // console.log(response.data["pk"]);
              this.setState({
                  is_admin: response.data["is_superuser"] ,
                  user_id: response.data["pk"],
@@ -107,8 +110,6 @@ class Project extends Component {
             withCredentials: true
         }).then(
             (response) => {
-                // console.log(response.data);
-
                 let arr = [];
                 const ul = response.data;
                 for(let user in ul){
@@ -116,17 +117,15 @@ class Project extends Component {
                     dict["key"] = user;
                     dict["value"] = ul[user]["pk"];
                     dict["text"] = ul[user]["full_name"];
-                    // dict["enrolment_number"] = ul[user]["enrolment_number"];
                     arr.push(dict);
                 }
-                // console.log("pen")
-                // console.log(arr)
-                // console.log(arr);
                 this.setState({
                     userList: arr
                 })
             }
-        );
+        ).catch( (e) => {
+            alert(e);
+        });
 
     }
 
@@ -150,7 +149,6 @@ class Project extends Component {
                 wiki: data,
             }
         }).then((response) => {
-            // console.log(response)
             if(response["status"] === 200){
                 this.setState({
                     wiki_save_loading: false,
@@ -162,6 +160,8 @@ class Project extends Component {
                     wiki_save_loading: false,
                 });
             }
+        }).catch( (e) => {
+            alert(e);
         });
     }
 
@@ -171,7 +171,7 @@ class Project extends Component {
             alert("Team cannot be empty.");
             return;
         }
-        console.log(members);
+
         let url = "/projects/"+this.state.project_id+"/update-team/";
         this.setState({
             wiki_save_loading: true,
@@ -186,9 +186,7 @@ class Project extends Component {
                 members: members
             }
         }).then((response) => {
-            // console.log(response)
             if(response["status"] === 200){
-
                 window.location.reload();
             } else{
                 this.setState({
@@ -197,6 +195,8 @@ class Project extends Component {
                 });
                 alert("Team update failed, sorry.");
             }
+        }).catch( (e) => {
+            alert(e);
         });
 
     }
@@ -231,15 +231,59 @@ class Project extends Component {
         return false;
     }
 
+    deploy(){
+        let del = window.confirm("Are you sure the app is ready to be deployed?");
+        if(!del) return;
+
+        this.setState({
+            deploy_loading: true,
+        });
+
+        let url = "/projects/"+this.state.project_id+"/deploy/"
+        axios({
+            url: url,
+            method: "get",
+            withCredentials: true,
+        }).then((response) => {
+            let status = response.data["Status"];
+            this.setState({
+                deploy_loading: false,
+            });
+            if(status === "Not authenticated."){
+                alert("You must be a team member or an admin to deploy the app.")
+            } else if(status === "All issues are not resolved for this project"){
+                alert("Please resolve all pending issues before deploying the project");
+            } else if(status === "Project successfully deployed"){
+                this.setState({
+                    project_deployed: true,
+                });
+            }
+        }).catch( (e) => {
+            alert(e);
+        } );
+    }
+
     render(){
+            if(this.state.project_found === null){
+                return (
+                    <div className="my-loader-div"><Loader active/></div>
+                );
+            }
+
+            if(this.state.project_found === false){
+                return(
+                    <ForbiddenMessage message="project-not-found"/>
+                );
+            }
+
             return (
                 <div className="my-page">
                     <MyNavBar/>
 
                     <div className="my-container">
                         <div className='my-container-inner'>
-                             <div className="ui secondary vertical large menu">
-                                <div className="left-menu-list">
+                             <div className="ui secondary vertical large menu left-menu-list">
+                                <div>
                                     <Link to="/dashboard" className="item">
                                             Dashboard
                                     </Link>
@@ -250,22 +294,51 @@ class Project extends Component {
 
                             </div>
 
-                            <div className="my-content">
+                            <div className="my-content">{/* index.css */}
                                 <div style={{marginTop: "20px"}}>
-                                    <div style={{
-                                        width: "100%",
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        alignContent: "flex-end",
-                                        justifyContent: "space-between"
-                                    }}>
-                                      <div style={{display: "flex", flexDirection:"column", justifyContent: "flex-end"}}>
-                                          <div className="ui large header">{this.state.project_name}</div>
+                                    <div className="page-header-container">{/* project.css */}
+                                      <div className="page-header-large">{/* project.css */}
+                                          <div className="my-horizontal-div">
+                                              <div id="project-title" className="ui large header">{this.state.project_name}</div>
+
+                                                {this.state.project_deployed &&
+                                                    <Popup
+                                                        content="Project has been deployed"
+                                                        size={"small"}
+                                                        inverted
+                                                        position='bottom center'
+                                                        trigger={
+                                                            <Icon
+                                                                color="green"
+                                                                size="large"
+                                                                style={{cursor:"pointer", alignSelf:"center", marginLeft: "10px"}}
+                                                                className="check circle icon"/>}
+                                                    />
+                                                    }
+
+                                                { this.isTeamMemberOrAdmin() && !this.state.project_deployed &&
+                                                    <Popup
+                                                        content="Deploy"
+                                                        size={"small"}
+                                                        inverted
+                                                        position='bottom center'
+                                                        trigger={
+                                                            <Icon
+                                                                loading={this.state.deploy_loading}
+                                                                color="blue"
+                                                                onClick = {this.deploy.bind(this)}
+                                                                size="large"
+                                                                style={{cursor:"pointer", alignSelf:"center", marginLeft: "10px"}}
+                                                                className="paper plane outline icon"/>}
+                                                    />
+                                                    }
+                                          </div>
                                       </div>
+
                                         <Link to={{pathname: "/report", state:{project_id: this.state.project_id}}}>
-                                            <Button id="add-proj" className="ui inverted violet labeled icon button">
+                                            <Button id="report-bug" className="ui inverted violet labeled icon button ">
                                                 <i className="fitted bug icon"/>
-                                                <p className="my-button-text-size">Report Bug</p>
+                                                <p className="my-button-text-size">Report Bug</p>{/* index.css */}
                                             </Button>
                                         </Link>
 
@@ -274,10 +347,10 @@ class Project extends Component {
                                     <Divider/>
                                 </div>
 
-                                <div style={{display:'flex', width:"60%", flexDirection:"row", justifyContent:"space-between", marginTop: "15px"}}>
+                                <div className="project-wiki-header-line">{/* project.css */}
                                     <div className={"ui header big"} style={{marginBottom:"0px"}}>Project Wiki</div>
                                     { this.isTeamMemberOrAdmin() &&
-                                    <div className="my-horizontal-div">
+                                    <div className="my-horizontal-div">{/* index.css */}
                                         {(this.state.wiki_saved && <p style={{margin:"0px"}}>SAVED</p>)
                                             || (this.state.wiki_save_failed && <p style={{margin:"0px"}}>SAVE FAILED :(</p> )}
 
@@ -293,29 +366,32 @@ class Project extends Component {
                                     </div>}
                                 </div>
 
-                                <div style={{width: "60%", border: "1px solid #5f6062", borderRadius: "5px", marginTop:"5px"}}>
+                                <div className="project-detail-ckeditor"> {/* project.css */}
                                     <div style={{maxHeight:"500px", overflowY:"auto"}}>
-                                    <CKEditor
-                                        editor={InlineEditor}
-                                        data={this.state.project_wiki}
-                                        disabled={!this.isTeamMemberOrAdmin()}
-                                        config={{resize_enabled: false}}
-                                        onChange={ ( event, editor ) => {
-                                            const data = editor.getData();
-                                            this.updateWiki(data, this.state.project_id);
-                                        } }
-                                       />
+                                        <CKEditor
+                                            editor={InlineEditor}
+                                            data={this.state.project_wiki}
+                                            disabled={!this.isTeamMemberOrAdmin()}
+                                            config={{resize_enabled: false}}
+                                            onChange={ ( event, editor ) => {
+                                                const data = editor.getData();
+                                                this.updateWiki(data, this.state.project_id);
+                                            } }
+                                           />
                                     </div>
-
                                 </div>
 
                                 <div className="my-horizontal-div">
-                                    <div className="team-members" style={{marginTop: "10px", display:"flex", flexDirection: "row", alignContent:"center"}}>
+                                    <div className="team-members"> {/* project.css */}
                                         <div style={{alignSelf:"center"}}><div className={"ui big header"} style={{ marginRight:"10px"}}>Team:</div></div>
-                                        <div className="ui items" id="team-members-list" style={{marginTop:"0px"}}>
+                                        <div className="ui items" className="team-members-list"> {/* project.css */}
                                             {this.state.project_members.map((member, index) => {
                                                     return (
-                                                            <div key={index} className={(member["is_superuser"] && "ui large black label")||"ui large blue label"}>{member["full_name"]}</div>
+                                                            <div
+                                                                key={index}
+                                                                className={(member["is_superuser"] && "ui large black label member-label")||"ui large blue label member-label"}> {/* project.css */}
+                                                                    {member["full_name"]}
+                                                            </div>
                                                         )
                                                 })
                                             }

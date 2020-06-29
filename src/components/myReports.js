@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Card, Header, Icon, Button, Accordion, Popup, Dropdown, Loader, Label, Segment, Image} from "semantic-ui-react";
 import Moment from "react-moment";
 import 'moment-timezone';
+import '../styles/issues.css';
 
 class MyReports extends Component {
 
@@ -36,7 +37,9 @@ class MyReports extends Component {
                     issues: response.data,
                 });
             }
-        );
+        ).catch( (e) => {
+            alert(e);
+        });
     }
 
 
@@ -48,11 +51,13 @@ class MyReports extends Component {
 
         if(this.state.issues.length === 0){
             //SHOW NO ISSUES YET
-            return (<div><div style={{marginTop:"30px", width:"80%"}} className="ui big header">No reports yet...</div></div>);
+            return (
+                <div className="ui big header none-available">No reports yet...</div> // {/* index.css */}
+             );
         }
 
         return (
-                <div id="issues-reported-by-me" style={{marginTop:"30px", width:"60%"}}>
+                <div id="issues-reported-by-me" className="my-page-cards-list"> {/* index.css */}
                     <Card.Group>
                         { this.state.issues.map( (issue, index) => {
                             return (
@@ -64,7 +69,6 @@ class MyReports extends Component {
                                         borderLeftStyle: "solid",
                                         borderLeftColor: this.state.priority_colors[issue["priority"]],
                                     }}
-
                                     fluid
                                 >
                                     {issue["resolved"] && <Label corner={"right"} color={"green"} icon={"check"} size={"mini"}/> }
@@ -76,7 +80,9 @@ class MyReports extends Component {
                                       <Card.Meta>{issue["project"]["title"]}</Card.Meta>
                                       <Card.Description>
                                         {issue["tags"].map((tag, index) => {
-                                               return( <Label key={index} className="tag-label">{tag["name"]}</Label> );
+                                               return(
+                                                   <Label key={index} className="tag-label">{tag["name"]}</Label> // {/* issues.css */}
+                                               );
                                             } )}
                                       </Card.Description>
                                   </Card.Content>

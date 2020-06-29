@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
+import '../styles/form.css';
 
 class AddIssue extends Component {
 
@@ -29,7 +30,6 @@ class AddIssue extends Component {
             withCredentials: true
         }).then(
             (response) => {
-                // console.log(response.data);
                 let arr = [];
                 const pl = response.data;
                 for(let project in pl){
@@ -37,18 +37,17 @@ class AddIssue extends Component {
                     dict["key"] = project;
                     dict["value"] = pl[project]["id"];
                     dict["text"] = pl[project]["title"];
-                    // dict["enrolment_number"] = ul[user]["enrolment_number"];
                     arr.push(dict);
                 }
 
-                // console.log(arr);
                 this.setState({
                     projectsList: arr,
                     for_project: this.getProject()
                 });
-                console.log(this.state);
             }
-        );
+        ).catch((e) => {
+            alert(e);
+        });
 
         axios({
             url: '/tags',
@@ -86,8 +85,9 @@ class AddIssue extends Component {
             this.setState({
                 user_id: response.data["pk"],
             });
+         }).catch((e) => {
+             alert(e);
          });
-         console.log(this.state);
 
     }
 
@@ -143,6 +143,7 @@ class AddIssue extends Component {
             this.setState({
                submit_loading: false,
             });
+            // alert(e);
             alert("Let's not go crazy with the text, words will do just fine :)");
         });
 
@@ -154,7 +155,6 @@ class AddIssue extends Component {
         } else{
             return this.props.location.state.project_id;
         }
-
     }
     render() {
         // const { isLoading, value, results } = this.state
@@ -178,36 +178,23 @@ class AddIssue extends Component {
 
                         <div className="my-content">
                             <div style={{marginTop: "20px"}}>
-                                <div style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignContent: "flex-end",
-                                    justifyContent: "space-between"
-                                }}>
-                                  <div style={{display: "flex", flexDirection:"column", justifyContent: "flex-end"}}>
-                                      <div className="ui large header">Report an Issue</div>
-                                  </div>
-
-                                </div>
-
+                                <Header size="large" >Report an Issue</Header>
                                 <Divider></Divider>
                             </div>
 
-                            <div style={{marginTop:"15px", width:"60%", display:"flex", flexDirection:"column"}}>
+                            <div className="form-content"> {/* index.css */}
 
                                 <Header as={'h3'} style={{marginBottom:"5px"}}>For Project:</Header>
-                                <div><Dropdown id="team-select"
-
+                                <div>
+                                    <Dropdown id="team-select"
                                           placeholder='Project'
                                           search selection
                                           options={this.state.projectsList}
                                           defaultValue = {this.getProject()}
                                           onChange={(event, data) =>{
-                                              // console.log(data.value);
                                               this.setState({for_project: data.value });
-
-                                          }}/></div>
+                                          }}/>
+                                </div>
 
                                 <Header as={'h3'} style={{marginBottom:"5px"}}>Subject:</Header>
                                 <Input
@@ -217,27 +204,24 @@ class AddIssue extends Component {
                                     maxLength={100}
                                     onChange={this.onSubjectChange.bind(this)}
                                     />
-                                <div style={{display:"flex", flexDirection:"row", marginTop:"5px"}}>
+                                <div className="form-input-meta-data"> {/* index.css */}
                                     <p>Characters left: {this.state.charsTitle} </p>
                                 </div>
 
 
-
                                 <Header as={'h3'} style={{marginBottom:"5px"}}>Description:</Header>
-                                <div style={{border: "1px solid #cad8de", borderRadius: "5px", marginBottom:"15px"}}>
-                                <CKEditor
-                                    id="project-wiki"
-                                    editor={InlineEditor}
-                                    config={ {placeholder: 'Add a description for better understanding...'}}
-                                    onChange={ ( event, editor ) => {
-                                           const data = editor.getData();
-
-                                            this.setState({
-                                                issue_description: data
-                                            });
-                                            console.log(this.state);
-                                        } }
-                                    />
+                                <div className="form-ckeditor-input">
+                                    <CKEditor
+                                        id="project-wiki"
+                                        editor={InlineEditor}
+                                        config={ {placeholder: 'Add a description for better understanding...'}}
+                                        onChange={ ( event, editor ) => {
+                                                const data = editor.getData();
+                                                this.setState({
+                                                    issue_description: data
+                                                });
+                                            } }
+                                        />
                                 </div>
 
                                 <Header as={'h3'} style={{marginBottom:"5px"}}>Tags:</Header>
@@ -249,9 +233,7 @@ class AddIssue extends Component {
                                           search selection
                                           options={this.state.tagsList}
                                           onChange={(event, data) =>{
-                                              // console.log(data.value);
                                               this.setState({tags_selected: data.value });
-
                                           }}/>
                                 </div>
 
@@ -291,13 +273,15 @@ class AddIssue extends Component {
                                     }}
                                   />
 
-                                <div style={{width:"50px", marginTop:"25px"}}>
+                                <div className="form-submit-button">
                                     <Button
                                         floated="left"
                                         secondary
                                         disabled={this.state.submit_loading}
                                         loading={this.state.submit_loading}
-                                        onClick={this.submitForm.bind(this)}>Submit</Button>
+                                        onClick={this.submitForm.bind(this)}>
+                                        Submit
+                                    </Button>
                                 </div>
 
                             </div>

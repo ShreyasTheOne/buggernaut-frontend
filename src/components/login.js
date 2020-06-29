@@ -16,26 +16,28 @@ class Login extends Component {
     }
 
     componentDidMount() {
-            axios({
-               url: "/users/test/",
-               method: "get",
-               withCredentials: true,
-            }).then((response) => {
-               console.log(response);
-                if(response.data["enrolment_number"] === "Not authenticated"){
-                   this.setState({
-                       login_state: false,
-                       got_response: true
-                   });
-               } else {
-                   this.setState({
-                       login_state: true,
-                       got_response: true
-                   });
-               }
+        axios({
+           url: "/users/test/",
+           method: "get",
+           withCredentials: true,
+        }).then((response) => {
+           console.log(response);
+            if(response.data["enrolment_number"] === "Not authenticated"){
+               this.setState({
+                   login_state: false,
+                   got_response: true
+               });
+           } else {
+               this.setState({
+                   login_state: true,
+                   got_response: true
+               });
+           }
 
-                console.log(this.state)
-            });
+            console.log(this.state)
+        }).catch( (e) => {
+            alert(e);
+        });
 
     }
 

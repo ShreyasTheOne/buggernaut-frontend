@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Card, Loader, Label} from "semantic-ui-react";
 
+
 class MyAssignments extends Component {
 
     constructor(props) {
         super(props);
-        // console.log(this.props)
         let initial_state = this.props; //user_id
         let append_state = {
             issues: null,
@@ -15,15 +15,12 @@ class MyAssignments extends Component {
         this.state = {...initial_state, ...append_state};
     }
 
-
     componentDidMount() {
         this.getIssuesList();
     }
 
     getIssuesList(){
-
         let url = "/issues/?assigned_to=" + this.state.user_id;
-
         axios({
             url: url,
             method: "get",
@@ -34,23 +31,27 @@ class MyAssignments extends Component {
                     issues: response.data,
                 });
             }
-        );
+        ).catch( (e) => {
+            alert(e);
+        });
     }
 
 
     render() {
 
         if(this.state.issues === null){
-            return(<div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>);
+            return(<div className="my-loader-div"><Loader active/></div>); {/* index.css */}
         }
 
         if(this.state.issues.length === 0){
             //SHOW NO ISSUES YET
-            return (<div><div style={{marginTop:"30px", width:"80%"}} className="ui big header">No assignments yet...</div></div>);
+            return (
+                    <div className="ui big header none-available">No assignments yet...</div> // {/* index.css */}
+            );
         }
 
         return (
-                <div id="issues-reported-by-me" style={{marginTop:"30px", width:"60%"}}>
+                <div id="issues-assigned-to-me" className="my-page-cards-list"> {/* index.css */}
                     <Card.Group>
                         { this.state.issues.map( (issue, index) => {
                             return (
@@ -62,7 +63,6 @@ class MyAssignments extends Component {
                                         borderLeftStyle: "solid",
                                         borderLeftColor: this.state.priority_colors[issue["priority"]],
                                     }}
-
                                     fluid
                                 >
                                     {issue["resolved"] && <Label corner={"right"} color={"green"} icon={"check"} size={"mini"}/> }
@@ -74,7 +74,9 @@ class MyAssignments extends Component {
                                       <Card.Meta>{issue["project"]["title"]}</Card.Meta>
                                       <Card.Description>
                                         {issue["tags"].map((tag, index) => {
-                                               return( <Label key={index} className="tag-label">{tag["name"]}</Label> );
+                                               return(
+                                                   <Label key={index} className="tag-label">{tag["name"]}</Label> // {/* index.css */}
+                                               );
                                             } )}
                                       </Card.Description>
                                   </Card.Content>

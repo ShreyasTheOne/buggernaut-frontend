@@ -18,8 +18,6 @@ class OnLogin extends Component {
         let url = this.props.location.search;
         let params = queryString.parse(url);
         console.log(params['code']);
-
-            // console.log("sending")
             axios({
                 method:'post',
                 url: '/users/onlogin/',
@@ -31,8 +29,7 @@ class OnLogin extends Component {
                     code: params['code'],
                 }
             }).then((response) => {
-                console.log(response);
-                // alert("gott");
+
                 //REMEMBER TO SET COOKIE AS ACCESS TOKEN -- NOPE NOT ANYMORE, USING SESSIONS
                 if(response.data["status"] === "user created") {
                     this.setState({
@@ -58,15 +55,12 @@ class OnLogin extends Component {
                        got_response: true,
                     });
                 }
+            }).catch( (e) => {
+                alert(e);
             });
-
-
     }
 
     render(){
-
-        // return(<ForbiddenMessage message={"alien"}/>);
-
         if(this.state.got_response){
           if(this.state.user_found){
               return (<Redirect to="/dashboard" exact/>);
@@ -77,11 +71,9 @@ class OnLogin extends Component {
           }
         }else{
            return(
-                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>
+               <div className="my-loader-div"><Loader active/></div> // {/* index.css */}
            );
         }
-
-
     }
 }
  export default OnLogin;
