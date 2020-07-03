@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Card, Header, Icon, Button, Accordion, Popup, Dropdown, Loader, Label, Segment, Image} from "semantic-ui-react";
-import Moment from "react-moment";
+import {Card, Loader, Label,} from "semantic-ui-react";
 import 'moment-timezone';
 import '../styles/issues.css';
 

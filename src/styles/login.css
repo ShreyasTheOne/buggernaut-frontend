@@ -1,36 +1,50 @@
-.granimate {
-  background-color: #2ecc71;
-  animation: hue 11s linear 0s infinite reverse;
-}
-.granimate::before {
-  background: linear-gradient(105deg, rgba(255, 190, 0, 0), #ffbe00);
-  animation: hue 12s linear 1s infinite;
-}
-
-@keyframes hue {
-  to {
-    filter: hue-rotate(1turn);
-  }
+.login-div{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.full {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-}
-.full::before {
-  /*content: '';*/
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-}
-.full::after {
-  position: relative;
-  text-align: center;
+.login-content{
+    height: 70%;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-body {
-  margin: 0;
+.login-button{
+    margin-top: 300px !important;
+}
+
+.login-button-text{
+    margin-left: 20px;
+    font-weight: normal;
+    font-size: 20px;
+}
+
+@media only screen and (max-width: 1250px){
+    .vertical-logo-div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .login-content{
+        height: 60%;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .login-button{
+        margin-top: 100px !important;
+    }
+
+
 }

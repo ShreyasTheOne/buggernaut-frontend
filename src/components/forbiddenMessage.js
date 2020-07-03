@@ -14,15 +14,6 @@ class ForbiddenMessage extends Component {
         }
     }
 
-    redirect(){
-        if(this.state.message === "project-not-found"){
-            window.location= "http://localhost:3000/dashboard";
-        } else {
-
-        }
-
-    }
-
     componentDidMount() {
         if(this.state.message !== "project-not-found"){
             setTimeout(() => {window.location= "http://localhost:3000/login"}, 5000);
@@ -48,8 +39,8 @@ class ForbiddenMessage extends Component {
             <div>
             <MyNavBar/>
             <div className="banned-page"> {/* index.css */}
-                {this.state.message === "banned" && <div className="banned-message">You have been banned from entering Buggernaut <span aria-label="sad emoji">😕</span></div>}
-                {this.state.message === "alien" && <div className="banned-message">Alien detected <span aria-label="alien emoji">👾</span></div>}
+                {this.state.message === "banned" && <div className="banned-message">You have been banned from entering Buggernaut <span role="img" aria-label="sad emoji">😕</span></div>}
+                {this.state.message === "alien" && <div className="banned-message">Alien detected <span role="img" aria-label="alien emoji">👾</span></div>}
             </div>
                 </div>
         );

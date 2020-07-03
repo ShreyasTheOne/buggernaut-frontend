@@ -1,4 +1,4 @@
-import {Divider, Input, Button, Radio, Dropdown, Header} from 'semantic-ui-react';
+import {Divider, Input, Button, Radio, Dropdown, Header, Confirm} from 'semantic-ui-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import React, { Component } from 'react';
@@ -20,6 +20,7 @@ class AddIssue extends Component {
         issue_priority: 2,
         charsTitle: 100,
         submit_loading: false,
+        confirm_open: false,
     }
 
     componentDidMount() {
@@ -101,11 +102,17 @@ class AddIssue extends Component {
     }
 
     submitForm() {
-       let subject = this.state.issue_subject;
-       let description = this.state.issue_description;
-       let priority = this.state.issue_priority;
-       let reporter = this.state.user_id;
-       let project = this.state.for_project;
+        console.log(this.state.tags_selected)
+
+        this.setState({
+            confirm_open: false,
+        });
+        let subject = this.state.issue_subject;
+        let description = this.state.issue_description;
+        let priority = this.state.issue_priority;
+        let reporter = this.state.user_id;
+        let project = this.state.for_project;
+
        let tags = this.state.tags_selected;
 
        if(reporter === "caramel"){alert("Sorry, we are unable to send a request. Please save your data elsewhere, refresh and try again"); return;}
@@ -116,6 +123,7 @@ class AddIssue extends Component {
        this.setState({
            submit_loading: true,
        });
+
         axios({
             url: "/issues/",
             method: "post",
@@ -143,7 +151,7 @@ class AddIssue extends Component {
             this.setState({
                submit_loading: false,
             });
-            // alert(e);
+            console.log(e);
             alert("Let's not go crazy with the text, words will do just fine :)");
         });
 
@@ -160,12 +168,19 @@ class AddIssue extends Component {
         // const { isLoading, value, results } = this.state
         return (
             <div className="my-page">
+                <Confirm
+                    open={this.state.confirm_open}
+                    cancelButton='No'
+                    confirmButton="Yes"
+                    onCancel={() => {this.setState({confirm_open: false,})}}
+                    onConfirm={this.submitForm.bind(this)}
+                />
                 <MyNavBar/>
 
                 <div className="my-container">
                     <div className='my-container-inner'>
-                        <div className="ui secondary vertical large menu">
-                            <div className="left-menu-list">
+                        <div className="ui secondary vertical large menu left-menu-list">
+                            <div>
                                 <Link to="/dashboard" className="item">
                                     Dashboard
                                 </Link>
@@ -279,7 +294,7 @@ class AddIssue extends Component {
                                         secondary
                                         disabled={this.state.submit_loading}
                                         loading={this.state.submit_loading}
-                                        onClick={this.submitForm.bind(this)}>
+                                        onClick={() => {this.setState({ confirm_open: true })}}>
                                         Submit
                                     </Button>
                                 </div>

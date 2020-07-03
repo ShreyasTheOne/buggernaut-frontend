@@ -15,16 +15,16 @@ class ProjectsList extends Component {
         this.state = {...initial_state, ...append_state};
     }
 
-    onWindowResize(){
-       this.setState({ isMobile: window.innerWidth <= 480 });
-    }
-
     componentDidMount() {
         window.addEventListener('resize', this.onWindowResize.bind(this));
         this.getProjectsList();
     }
 
-    componentWillMount() {
+    onWindowResize(){
+        this.setState({ isMobile: window.innerWidth <= 480 });
+    }
+
+    componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize.bind(this));
     }
 

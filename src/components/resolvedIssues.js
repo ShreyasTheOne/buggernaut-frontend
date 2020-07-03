@@ -132,7 +132,7 @@ class ResolvedIssues extends Component {
             return(
                 <div id="my-current-issues-list" className="issues-box"> {/* issues.css */}
                     <div className="ui big header">Resolved Issues</div>
-                    <p style={{alignSelf:"center", fontSize:"1.1em"}}>No resolved issues <span aria-label="cowboy hat emoji">🤠</span> </p>
+                    <p style={{alignSelf:"center", fontSize:"1.1em"}}>No resolved issues <span role="img" aria-label="cowboy hat emoji">🤠</span> </p>
                 </div>
             );
         }
@@ -183,14 +183,21 @@ class ResolvedIssues extends Component {
                                                                 disabled={true}
                                                                />
 
-                                                              <div className="issue-meta-data">
+                                                              <div className="issue-meta-data"> {/* issues.css */}
                                                                   <div className="my-horizontal-div">
-                                                                      <div><strong>Reported by:</strong> {issue["reported_by"]["full_name"]}</div>
-                                                                      <div style={{marginLeft:"10px"}}><strong>Resolved by:</strong> {issue["resolved_by"]["full_name"]}</div>
+                                                                      <div className="reported-by-div">{/* issues.css */}
+                                                                          <strong>Reported by:</strong>
+                                                                          <span className="doer-name">{issue["reported_by"]["full_name"]}</span>{/* issues.css */}
+                                                                      </div>
+                                                                      <div className="resolved-by-div">{/* issues.css */}
+                                                                          <strong>Resolved by:</strong>
+                                                                          <span className="doer-name">{issue["resolved_by"]["full_name"]}</span>{/* issues.css */}
+                                                                      </div>
                                                                   </div>
                                                                   {this.state.teamMemberOrAdmin &&
-                                                                      <div>
+                                                                      <div className="issue-buttons-div">
                                                                           <Button
+                                                                              className="issue-action-button"
                                                                               positive
                                                                               size="small"
                                                                               disabled={this.state.reopen_loading}
@@ -202,6 +209,7 @@ class ResolvedIssues extends Component {
                                                                           </Button>
 
                                                                           <Button
+                                                                              className="issue-action-button"
                                                                               negative
                                                                               size="small"
                                                                               disabled={this.state.delete_loading}

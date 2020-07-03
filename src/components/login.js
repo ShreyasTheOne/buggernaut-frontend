@@ -1,40 +1,44 @@
 import React, {Component} from 'react';
 import '../styles/login.css';
 import '../styles/nav.css';
-import { Button } from 'semantic-ui-react';
+import {Button, Header, Image} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import axios from "axios";
 
 class Login extends Component {
      state = {
-            login_state: false,
-            got_response: false
+            login_state: null,
+            isMobile: (window.innerWidth <= 480)
         }
 
     redirect(){
         window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:3000/onlogin&state=gottem";
     }
 
+    onWindowResize(){
+        this.setState({ isMobile: window.innerWidth <= 480 });
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
+    }
+
     componentDidMount() {
+         window.addEventListener('resize', this.onWindowResize.bind(this));
         axios({
            url: "/users/test/",
            method: "get",
            withCredentials: true,
         }).then((response) => {
-           console.log(response);
             if(response.data["enrolment_number"] === "Not authenticated"){
                this.setState({
                    login_state: false,
-                   got_response: true
                });
            } else {
                this.setState({
                    login_state: true,
-                   got_response: true
                });
            }
-
-            console.log(this.state)
         }).catch( (e) => {
             alert(e);
         });
@@ -42,18 +46,43 @@ class Login extends Component {
     }
 
     render(){
+        if(this.state.login_state === null || this.state.login_state === false){
+            if(!this.state.isMobile){
+                return(
+                        <div className="login-div">
+                            <div className="login-content">
+                                <Image src={require("../assets/app_logo_with_name_white.png")}/>
+                                <Button onClick={this.redirect.bind(this)} inverted color={"violet"} className="login-button">
+                                    <div className="my-horizontal-div">
+                                        <Image size={"mini"} src={require("../assets/op_logo.png")}/>
+                                        <span className="login-button-text">Login through Omniport</span>
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                );
+            } else{
+                return(
+                    <div className="login-div">
+                            <div className="login-content">
+                                <div className="vertical-logo-div">
+                                    <Image src={require("../assets/app_logo_white.png")}/>
+                                    <Image src={require("../assets/app_logo_only_name_white.png")}/>
+                                </div>
+                                <Button onClick={this.redirect.bind(this)} inverted color={"violet"} className="login-button">
+                                    <div className="my-horizontal-div">
+                                        <Image size={"mini"} src={require("../assets/op_logo.png")}/>
+                                        <span className="login-button-text">Login through Omniport</span>
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                );
+            }
 
-        if(this.state.got_response && this.state.login_state){
-            return <Redirect to="/dashboard" exact/>;
+
         } else{
-             return(
-                <div className="full granimate">
-                    <Button className="ui white massive button" onClick={this.redirect}>
-                        {/*<img className="ui tiny image" src={require("../assets/op_logo.png")}></img>*/}
-                        Login using Omniport
-                    </Button>
-                </div>
-            );
+            return <Redirect to="/dashboard" exact/>;
         }
 
 

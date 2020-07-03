@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import {Link} from 'react-router-dom';
-import {Divider, Popup, Button, Loader, Dropdown, Icon} from "semantic-ui-react";
+import {Divider, Popup, Button, Loader, Dropdown, Icon, Confirm} from "semantic-ui-react";
 import MyNavBar from "./nav";
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
@@ -22,6 +22,7 @@ class Project extends Component {
         project_id: null,
         project_deployed: false,
         deploy_loading: false,
+        deploy_confirm_open: false,
         project_members: [],
         project_members_enrolment_number_list:[],
         project_members_id_list:[],
@@ -232,11 +233,9 @@ class Project extends Component {
     }
 
     deploy(){
-        let del = window.confirm("Are you sure the app is ready to be deployed?");
-        if(!del) return;
-
         this.setState({
             deploy_loading: true,
+            deploy_confirm_open: false,
         });
 
         let url = "/projects/"+this.state.project_id+"/deploy/"
@@ -278,6 +277,14 @@ class Project extends Component {
 
             return (
                 <div className="my-page">
+                    <Confirm
+                        open={this.state.deploy_confirm_open}
+                        cancelButton="Not really..."
+                        confirmButton="Oh yeah!"
+                        content="Are you sure the app is ready to be deployed?"
+                        onCancel={() => {this.setState({deploy_confirm_open: false,})}}
+                        onConfirm={this.deploy.bind(this)}
+                    />
                     <MyNavBar/>
 
                     <div className="my-container">
@@ -326,7 +333,7 @@ class Project extends Component {
                                                             <Icon
                                                                 loading={this.state.deploy_loading}
                                                                 color="blue"
-                                                                onClick = {this.deploy.bind(this)}
+                                                                onClick = {() => {this.setState({deploy_confirm_open: true})}}
                                                                 size="large"
                                                                 style={{cursor:"pointer", alignSelf:"center", marginLeft: "10px"}}
                                                                 className="paper plane outline icon"/>}
@@ -361,7 +368,7 @@ class Project extends Component {
                                         <Popup
                                             trigger={<i className="pencil icon"/>}
                                             content='Click on wiki to edit'
-                                            position='top center'
+                                            position='top right'
                                         />
                                     </div>}
                                 </div>
@@ -384,7 +391,7 @@ class Project extends Component {
                                 <div className="my-horizontal-div">
                                     <div className="team-members"> {/* project.css */}
                                         <div style={{alignSelf:"center"}}><div className={"ui big header"} style={{ marginRight:"10px"}}>Team:</div></div>
-                                        <div className="ui items" className="team-members-list"> {/* project.css */}
+                                        <div className="ui items team-members-list"> {/* project.css */}
                                             {this.state.project_members.map((member, index) => {
                                                     return (
                                                             <div

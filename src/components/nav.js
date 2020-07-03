@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link, Redirect} from 'react-router-dom';
-import {Header, Icon, Image, Popup, Statistic} from "semantic-ui-react";
+import {Button, Header, Icon, Image, Popup} from "semantic-ui-react";
 import ForbiddenMessage from "./forbiddenMessage";
 import '../styles/nav.css';
 
 
 class MyNavBar extends Component {
 
-    state = {
+    constructor(props) {
+        super(props);
+
+        this.state = {
             login_state: false,
             got_response: false,
             enrolmentNumber: null,
@@ -16,7 +19,9 @@ class MyNavBar extends Component {
             user_img: null,
             is_admin: null,
             user_banned: null,
+            isMobile: (window.innerWidth <= 480),
         }
+    }
 
     setCookie(cname, cvalue, exdays) {
       let d = new Date();
@@ -99,58 +104,53 @@ class MyNavBar extends Component {
                                 <div className="my-nav"> {/* nav.css */}
                                     <Link to="/dashboard" className="a"><div className='ui medium header buggernaut-title'>Buggernaut</div></Link> {/* nav.css */}
                                     <div className='my-icon-nav-links'> {/* nav.css */}
-                                         <Popup
-                                            wide={"very"}
+                                        <Popup
+                                            hideOnScroll
                                             position='bottom right'
                                             on="click"
+                                            style={{padding: "0px"}}
                                             trigger={<img style={{cursor:'pointer'}} alt="ProfilePicture" className="ui circular mini image" src={this.state.user_img}/>}
                                          >
-                                            <Popup.Header>
+                                            <Popup.Header style={{padding:"10px 15px"}}>
                                                 <div className="profile-menu-header"> {/* nav.css */}
                                                     <div className="profile-menu-header-left"> {/* nav.css */}
-                                                        <Image alt="ProfilePicture" circular src={this.state.user_img}/>
+                                                        <Image alt="ProfilePicture" circular size={"tiny"} src={this.state.user_img}/>
                                                     </div>
                                                     <div className="profile-menu-header-right"> {/* nav.css */}
-                                                        <Header className={"profile-menu-name-header"} >{this.state.user_name}</Header> {/* nav.css */}
-                                                        <Header className={"profile-menu-name-header"} >{this.state.enrolmentNumber}</Header> {/* nav.css */}
+                                                        <Header as="h4" style={{margin:"0px"}}>{this.state.user_name}</Header> {/* nav.css */}
                                                         <div className={"profile-menu-stats"}> {/* nav.css */}
-                                                            <Statistic className="profile-menu-stats-reported" size={"mini"}> {/* nav.css */}
-                                                                <Statistic.Value>{this.state.reported_count}</Statistic.Value>
-                                                                <Statistic.Label>BUGS REPORTED</Statistic.Label>
-                                                            </Statistic>
-                                                            <Statistic className="profile-menu-stats-resolved" size={"mini"}> {/* nav.css */}
-                                                                <Statistic.Value>{this.state.resolved_count}</Statistic.Value>
-                                                                <Statistic.Label>BUGS RESOLVED</Statistic.Label>
-                                                            </Statistic>
-                                                        </div>
-                                                        <div className="profile-menu-actions"> {/* nav.css */}
-                                                            {this.state.is_admin &&
-                                                               <Link to="/admin">
-                                                                   {/*or should I use user icon to represent admin?*/}
-                                                                   <Icon
-                                                                    size={"large"}
-                                                                    name={"chess king"}
-                                                                    className={"profile-menu-icons"}
-                                                                    />
-                                                                   {/* nav.css */}
-                                                               </Link>
-                                                            }
-
-                                                            <Icon
-                                                                size={"large"}
-                                                                name={"log out"}
-                                                                className={"profile-menu-icons"}
-                                                                onClick={this.logout.bind(this)}
-                                                            /> {/* nav.css */}
+                                                            <span style={{fontWeight: "normal", fontSize:"0.9em"}}>{this.state.reported_count} Bugs Reported</span>
+                                                            <span style={{fontWeight: "normal", fontSize:"0.9em"}}>{this.state.resolved_count} Bugs Resolved</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </Popup.Header>
                                             <Popup.Content>
+                                                <Button.Group fluid vertical basic attached={"bottom"}>
+                                                   <Button onClick={() => {window.location = "http://localhost:3000/dashboard"}} icon labelPosition='left'>
+                                                      <Icon name='home' />
+                                                        Dashboard
+                                                    </Button>
+                                                    <Button onClick={() => {window.location = "http://localhost:3000/mypage"}} icon labelPosition='left'>
+                                                      <Icon name='user' />
+                                                        My Page
+                                                    </Button>
 
+                                                    {this.state.is_admin &&
+                                                        <Button onClick={() => {window.location = "http://localhost:3000/admin"}} icon labelPosition='left'>
+                                                            <Icon name='chess king' />
+                                                                Admin
+                                                        </Button>
+                                                    }
+                                                    <Button onClick={this.logout.bind(this)} icon labelPosition='left'>
+                                                      <Icon name='sign-out' />
+                                                        Log out
+                                                    </Button>
+                                                </Button.Group>
                                             </Popup.Content>
                                         </Popup>
                                     </div>
+
                                 </div>
 
                         );

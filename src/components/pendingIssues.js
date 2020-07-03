@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import {Header, Icon, Button, Accordion, Popup, Dropdown, Label, Loader} from "semantic-ui-react";
+import {Header, Icon, Button, Accordion, Popup, Dropdown, Label, Loader,} from "semantic-ui-react";
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
 import 'moment-timezone';
@@ -20,6 +20,9 @@ class PendingIssues extends Component {
             resolve_loading: false,
             delete_loading: false,
             assign_to_member: null,
+            // assign_confirm_open: false,
+            // delete_confirm_open: false,
+            // reopen_resolve_confirm_open: false,
             priority_colors: ["black", "#E30F00", "#FFAA00", "#95C200"] //#9FCC2E
         };
         this.state = {...initial_state, ...append_state};
@@ -36,6 +39,7 @@ class PendingIssues extends Component {
 
         this.setState({
             assign_loading:true,
+            assign_confirm_open: false,
         });
 
         if(this.state.assign_to_member === null){
@@ -95,6 +99,7 @@ class PendingIssues extends Component {
 
         this.setState({
             delete_loading:true,
+            delete_confirm_open: false,
         });
         let url = "/issues/"+issue_id+"/";
         axios({
@@ -114,16 +119,15 @@ class PendingIssues extends Component {
     }
 
     handleResolveReopen(issue_id, view_id, task){
-        let del = window.confirm("Are you sure?");
-        if(!del) return;
-
         if(task==="resolve"){
             this.setState({
                 resolve_loading: true,
+                reopen_resolve_confirm_open: false,
             });
         } else if(task==="reopen"){
             this.setState({
                 reopen_loading: true,
+                reopen_resolve_confirm_open: false,
             });
         }
 
@@ -159,7 +163,7 @@ class PendingIssues extends Component {
             return(
                 <div id="my-current-issues-list" className="issues-box"> {/* issues.css */}
                     <div className="ui big header">Pending Issues</div>
-                    <p style={{alignSelf:"center", fontSize:"1.1em"}}>No pending issues <span aria-label="party hat emoji">🥳</span> </p>
+                    <p style={{alignSelf:"center", fontSize:"1.1em"}}>No pending issues <span role="img" aria-label="party hat emoji">🥳</span> </p>
                 </div>
             );
         }
@@ -215,11 +219,11 @@ class PendingIssues extends Component {
                                                     <div className="my-horizontal-div">
                                                         <div className="reported-by-div"> {/* issues.css*/}
                                                             <strong>Reported by:</strong>
-                                                            <span>{issue["reported_by"]["full_name"]}</span>
+                                                            <span className="doer-name">{issue["reported_by"]["full_name"]}</span>{/* issues.css */}
                                                         </div>
-                                                        <div className="assigned-to-div">
+                                                        <div className="assigned-to-div">{/* issues.css */}
                                                             <strong>Assigned to:</strong>
-                                                            <span>{issue["assigned_to"] === null ? " ¯\\_(ツ)_/¯ " : issue["assigned_to"]["full_name"]}</span>
+                                                            <span className="doer-name">{issue["assigned_to"] === null ? " ¯\\_(ツ)_/¯ " : issue["assigned_to"]["full_name"]}</span>
                                                         </div>
                                                     </div>
 

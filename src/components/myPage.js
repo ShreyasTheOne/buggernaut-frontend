@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Divider, Button, Header, Loader, Menu} from 'semantic-ui-react';
+import {Loader, Menu} from 'semantic-ui-react';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import MyReports from "./myReports";
@@ -70,7 +70,7 @@ class MyPage extends Component {
                          </div>
 
                         <div className="my-content"> {/* index.css */}
-                            <div style={{marginTop: "30px"}}>
+                            <div className="my-page-menu-container">
                                 <Menu pointing secondary>
                                     <Menu.Item
                                         name="my-reports"

@@ -3,6 +3,7 @@
 
 .my-nav{
     background: #F9F8F8;
+    /*background: #FFF5EB;*/
     height: 40px;
     width: 100%;
     position: sticky !important;
@@ -16,6 +17,7 @@
 
 .buggernaut-title{
     color: #7A6C5D !important;
+    /*color: #373F51 !important;*/
 }
 
 .buggernaut-title:hover{
@@ -32,7 +34,6 @@
 .my-icon-nav-links{
     position: absolute;
     right: 10px;
-    /*width: 100px;*/
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -51,6 +52,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 0px;
 }
 
 .profile-menu-header-right{
@@ -59,31 +61,25 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    padding-right: 5px;
 }
 
-.profile-menu-name-header{
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-    font-weight: lighter !important;
+.nav-popup-buttons{
+    width: 100% !important;
 }
 
 .profile-menu-stats{
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.profile-menu-actions {
-    width: 30%;
+    margin-top: 10px;
+    font-weight: lighter;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 @media only screen and (max-width: 1250px){
     .my-nav{
-        height: 50px;
+        height: 45px;
         justify-content: flex-start;
         padding: 0px 10px;
     }

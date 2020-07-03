@@ -40,7 +40,7 @@ class MyAssignments extends Component {
     render() {
 
         if(this.state.issues === null){
-            return(<div className="my-loader-div"><Loader active/></div>); {/* index.css */}
+            return(<div className="my-loader-div"><Loader active/></div>); // {/* index.css */}
         }
 
         if(this.state.issues.length === 0){

@@ -44,7 +44,7 @@
     margin-bottom: 20px;
 }
 
-.assigned-to-div{
+.assigned-to-div, .resolved-by-div{
     display: flex;
     flex-direction: row;
     margin-left: 10px;
@@ -53,6 +53,10 @@
 .reported-by-div, .issue-buttons-div{
     display: flex;
     flex-direction: row;
+}
+
+.doer-name{
+    margin-left: 3px;
 }
 
 @media only screen and (max-width: 1250px) {
@@ -64,8 +68,8 @@
         display: none !important;
     }
 
-    .assigned-to-div{
-        margin-left: 20px;
+    .assigned-to-div, .resolved-by-div{
+        margin-left: 15px;
         flex-direction: column;
     }
 
@@ -75,5 +79,9 @@
 
     .issue-action-button{
         margin-top: 2px !important;
+    }
+
+    .doer-name{
+        margin-left: 0px;
     }
 }

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Divider, Button, Table, Loader} from 'semantic-ui-react';
+import {Divider, Button, Table, Loader, Card, Image, Confirm} from 'semantic-ui-react';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 
 
 class AdminPage extends Component {
+
 
     state = {
         is_admin: null,
@@ -13,11 +14,19 @@ class AdminPage extends Component {
         status_loading_button: -1,
         ban_loading_button: -1,
         buttons_disabled: false,
-
+        isMobile: (window.innerWidth <= 480)
     }
 
+    onWindowResize(){
+        this.setState({ isMobile: window.innerWidth <= 480 });
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
+    }
 
     componentDidMount() {
+        window.addEventListener('resize', this.onWindowResize.bind(this));
         axios({
             url:"/users/test/",
             method: "get",
@@ -83,7 +92,6 @@ class AdminPage extends Component {
         let del = window.confirm("Are you sure?");
         if(!del) return;
 
-        // console.log(user_id);
         let url = "/users/"+user_id+"/toggleStatus";
         this.setState({
             buttons_disabled: true,
@@ -140,12 +148,81 @@ class AdminPage extends Component {
         }
 
 
+        if(this.state.isMobile){
+            return (
+                <div className="my-page">
+                    <MyNavBar/>
+
+                    <div className="my-container">
+                        <div className='my-container-inner'>
+                            <div className="my-content">
+                                <div style={{marginBottom: "0px"}} className="ui large header">Admin Page</div>
+                                <Divider/>
+                                {this.state.userList === null && <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>}
+                                {this.state.userList !== null &&
+                                     <Card.Group>
+                                        { this.state.userList.map( (user, index) => {
+                                            return (
+                                                <Card
+                                                    key={index}
+                                                    fluid
+                                                >
+                                                  <Card.Content>
+                                                      <Card.Header>
+                                                          <Image
+                                                              size={"mini"}
+                                                              circular
+                                                              alt="ProfilePicture"
+                                                              className="admin-list-image" //index.css
+                                                              src={user["display_picture"]}
+                                                          />
+
+                                                              {user["full_name"]}
+                                                      </Card.Header>
+                                                      <Card.Meta>{(user["is_superuser"] && "Admin") || "User"}</Card.Meta>
+                                                      <Card.Description>
+                                                        <Button
+                                                            onClick={() => { this.userBanToggle(user["pk"]); }}
+                                                            disabled={this.state.buttons_disabled}
+                                                            loading={this.state.ban_loading_button === user["pk"]}
+                                                            color={ user["banned"] ? "green" : "red"}
+                                                            content={ user["banned"] ? "Enable" : "Disable"}
+                                                            size={"small"}
+                                                        />
+                                                        <Button
+                                                            onClick={() => {this.userStatusToggle(user["pk"]);}}
+                                                            color={"blue"}
+                                                            disabled={this.state.buttons_disabled}
+                                                            loading={this.state.status_loading_button === user["pk"]}
+                                                            content={(user["is_superuser"]) ? "Demote to User" : "Promote to Admin"}
+                                                            size={"small"}
+                                                        />
+                                                      </Card.Description>
+                                                  </Card.Content>
+                                                </Card>
+                                            );
+                                        })}
+                                    </Card.Group>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
 
 
         return (
             <div className="my-page">
                 <MyNavBar/>
-
+                <Confirm
+                    id="disable-enable-confirm"
+                    open={this.state.disable_enable_confirm_open}
+                    cancelButton='No'
+                    confirmButton="Yes"
+                    onCancel={() => {this.setState({confirm_open: false,})}}
+                    onConfirm={this.userBanToggle.bind(this)}
+                />
                 <div className="my-container">
                     <div className='my-container-inner'>
                         <div className="ui secondary vertical large menu left-menu-list">
@@ -189,7 +266,6 @@ class AdminPage extends Component {
                                                             disabled={this.state.buttons_disabled}
                                                             loading={this.state.ban_loading_button === user["pk"]}
                                                             color={ user["banned"] ? "green" : "red"}
-                                                            inverted
                                                             content={ user["banned"] ? "Enable" : "Disable"}
                                                             size={"small"}
                                                         />
@@ -204,7 +280,6 @@ class AdminPage extends Component {
                                                             size={"small"}
                                                         />
                                                 </Table.Cell>
-
                                             </Table.Row>
                                         );
                                     })}

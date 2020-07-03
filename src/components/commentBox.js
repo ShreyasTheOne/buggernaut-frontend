@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Button, Checkbox, Comment, Divider, Header, Icon, Input} from 'semantic-ui-react';
+import {Button, Checkbox, Comment, Divider, Header, Input} from 'semantic-ui-react';
 import Moment from 'react-moment';
 import 'moment-timezone';
 import '../styles/commentBox.css';

@@ -1,4 +1,4 @@
-import {Input, Button, Checkbox, Dropdown, Header} from 'semantic-ui-react';
+import {Input, Button, Checkbox, Dropdown, Header, Confirm} from 'semantic-ui-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import React, { Component } from 'react';
@@ -17,6 +17,8 @@ class AddProject extends Component {
         project_slug: "",
         slug_available:"",
         submit_loading: false,
+        confirm_open: false,
+        // image_confirm_open: false,
     }
 
     componentDidMount() {
@@ -49,7 +51,7 @@ class AddProject extends Component {
         let value = document.getElementById("project-name").value.trim();
         let slug = value.replace(/\s+/g, '-').toLowerCase();
 
-        if(! (value === null || value === "") ){
+        if(!(value === "") ){
             let url = '/projects/verify/?slug=' + slug;
             axios({
                 method: 'get',
@@ -57,8 +59,6 @@ class AddProject extends Component {
                 withCredentials: true,
             }).then(
                 (response) => {
-                    console.log("Slug Check:");
-                    console.log(response.data);
                     let status = response.data["status"];
                     if(status === "Available"){
                         this.setState({
@@ -87,6 +87,10 @@ class AddProject extends Component {
     }
 
     submitForm() {
+         this.setState({
+            confirm_open: false,
+        });
+
         let projectName = this.state.project_name;
         let projectSlug = this.state.project_slug;
         let projectMembers = this.state.project_members;
@@ -130,7 +134,7 @@ class AddProject extends Component {
             formData.append("members", projectMembers[mem]);
         }
 
-        this.setState({
+         this.setState({
             submit_loading: true,
         });
 
@@ -158,7 +162,13 @@ class AddProject extends Component {
     render() {
         return (
             <div className="form-content"> {/* index.css */}
-
+                <Confirm
+                    open={this.state.confirm_open}
+                    cancelButton='No'
+                    confirmButton="Yes"
+                    onCancel={() => {this.setState({confirm_open: false,})}}
+                    onConfirm={this.submitForm.bind(this)}
+                />
                 <Header as={'h3'} style={{marginBottom:"5px"}}>Project name:</Header>
                 <Input
                     fluid
@@ -219,7 +229,8 @@ class AddProject extends Component {
                        floated="left"
                        disabled={this.state.submit_loading}
                        loading={this.state.submit_loading}
-                       secondary onClick={this.submitForm.bind(this)}>
+                       secondary
+                       onClick={() => {this.setState({confirm_open: true})}}>
                        Submit
                    </Button>
                 </div>
