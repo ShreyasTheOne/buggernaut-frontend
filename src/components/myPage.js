@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Loader, Menu} from 'semantic-ui-react';
+import {Header, Loader, Menu} from 'semantic-ui-react';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import MyReports from "./myReports";
@@ -55,7 +55,7 @@ class MyPage extends Component {
         return (
             <div className="my-page">
                 <MyNavBar/>
-
+                <div className="dashboard-mobile-header-container"><Header className="dashboard-mobile-header">My Page</Header></div>
                 <div className="my-container"> {/* index.css */}
                     <div className='my-container-inner'> {/* index.css */}
                         <div className="ui secondary vertical large menu left-menu-list">

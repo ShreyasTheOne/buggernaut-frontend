@@ -1,25 +1,48 @@
 import {Input, Button, Checkbox, Dropdown, Header, Confirm} from 'semantic-ui-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
+// import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/form.css';
+import MyUploadAdapter from "../uploadAdapter";
 
 class AddProject extends Component {
 
-    state={
-        userList: [],
-        project_image: null,
-        project_name: "",
-        project_wiki: "",
-        project_deployed: false,
-        project_members: [],
-        project_slug: "",
-        slug_available:"",
-        submit_loading: false,
-        confirm_open: false,
-        // image_confirm_open: false,
+    constructor(props) {
+        super(props);
+        this.state={
+            userList: [],
+            editor_images: [],
+            project_image: null,
+            project_name: "",
+            project_wiki: "",
+            project_deployed: false,
+            project_members: [],
+            project_slug: "",
+            slug_available:"",
+            slug_valid: true,
+            submit_loading: false,
+            confirm_open: false,
+            editorID: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+        }
     }
+
+    // getCookie(cname) {
+    //   var name = cname + "=";
+    //   var decodedCookie = decodeURIComponent(document.cookie);
+    //   var ca = decodedCookie.split(';');
+    //   for(var i = 0; i <ca.length; i++) {
+    //     var c = ca[i];
+    //     while (c.charAt(0) == ' ') {
+    //       c = c.substring(1);
+    //     }
+    //     if (c.indexOf(name) == 0) {
+    //       return c.substring(name.length, c.length);
+    //     }
+    //   }
+    //   return "";
+    // }
 
     componentDidMount() {
 
@@ -50,6 +73,18 @@ class AddProject extends Component {
     onProjectNameChange() {
         let value = document.getElementById("project-name").value.trim();
         let slug = value.replace(/\s+/g, '-').toLowerCase();
+        let validator = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+        if(!validator.test(slug)){
+            this.setState({
+                slug_valid: false, project_name: value, project_slug: slug, slug_available: false
+            });
+            return;
+        }else{
+            this.setState({
+                slug_valid: true,
+            });
+        }
 
         if(!(value === "") ){
             let url = '/projects/verify/?slug=' + slug;
@@ -81,6 +116,14 @@ class AddProject extends Component {
 
     uploadImage = (e) => {
         let image = e.target.files[0];
+
+        let extension = image.name.split('.').pop();
+
+        if(!(extension === "png" || extension === "jpg" || extension === "jpeg")){
+            alert("Image is not mandatory, but if uploaded, must be of file type .jpeg, .png, or .jpg .");
+            return;
+        }
+
         this.setState({
             project_image: image,
         });
@@ -97,13 +140,17 @@ class AddProject extends Component {
         let projectDeployed = this.state.project_deployed;
         let projectWiki = this.state.project_wiki;
         let slugAvailable = this.state.slug_available;
-
+        let slugValid = this.state.slug_valid;
+        if(!slugValid){
+            alert("The generated slug is invalid.");
+            return;
+        }
 
         if(!slugAvailable){
             alert("A project with this slug already exists.");
             return;
         }
-        if(projectMembers.length ===0) {
+        if(projectMembers.length === 0) {
             alert("Team cannot have zero members");
             return;
         }
@@ -129,6 +176,7 @@ class AddProject extends Component {
         formData.append('slug', projectSlug);
         formData.append('wiki', projectWiki);
         formData.append('deployed', projectDeployed);
+        formData.append('editorID', this.state.editorID);
 
         for(let mem in projectMembers){
             formData.append("members", projectMembers[mem]);
@@ -157,6 +205,21 @@ class AddProject extends Component {
             alert(e);
         });
 
+        const deleteData = new FormData();
+        deleteData.append('editorID', this.state.editorID)
+        deleteData.append('urls', this.state.editor_images)
+
+        axios({
+            url:"/images/deleteRem/",
+            method:"post",
+            data: deleteData,
+            withCredentials: true,
+        }).then((response)=>{
+            // console.log(response);
+        }).catch((e) => {
+            console.log(e);
+        });
+
     }
 
     render() {
@@ -171,17 +234,18 @@ class AddProject extends Component {
                 />
                 <Header as={'h3'} style={{marginBottom:"5px"}}>Project name:</Header>
                 <Input
+                    error={!this.state.slug_valid}
                     fluid
                     id='project-name'
                     placeholder="Buggernaut"
                     onChange={this.onProjectNameChange.bind(this)}
                     />
 
-                <div className="input-meta-data"> {/* index.css */}
+                <div className="form-input-meta-data"> {/* form.css */}
                     <p style={{marginRight:"5px"}}>Slug generated:</p>
-                    {(this.state.project_slug !== "" && this.state.project_slug != null )  &&
+                    {(!this.state.slug_valid && <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG INVALID!</p> ) || ((this.state.project_slug !== "" && this.state.project_slug != null )  &&
                         (this.state.slug_available && <p style={{color:"green"}}>{this.state.project_slug} &nbsp;SLUG AVAILABLE! :)</p>
-                    || <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG UNAVAILABLE :(</p>)}
+                    || <p style={{color:"red"}}>{this.state.project_slug} &nbsp;SLUG UNAVAILABLE :(</p>))}
                 </div>
 
 
@@ -191,12 +255,24 @@ class AddProject extends Component {
                     <CKEditor
                         id="project-wiki"
                         editor={InlineEditor}
-                        config={ {placeholder: "Instructions on how to use the app...", height: "100px" }}
+                        config={{
+                            placeholder: "Instructions on how to use the app...",
+                            height: "100px",
+                        }}
+                        onInit={editor=>{
+                                const editorID = this.state.editorID
+                                editor.plugins.get('FileRepository').createUploadAdapter = function(loader){
+                                    return new MyUploadAdapter(loader, editorID);
+                                }
+                            }}
                         onChange={ ( event, editor ) => {
-                               const data = editor.getData();
+                                const editor_imgs = Array.from( new DOMParser().parseFromString( editor.getData(), 'text/html' )
+                                        .querySelectorAll( 'img' ) )
+                                        .map( img => img.getAttribute( 'src' ) )
                                 this.setState({
-                                    project_wiki: data
-                                });
+                                    project_wiki: editor.getData(),
+                                    editor_images: editor_imgs,
+                                })
                             } }
 
                         />

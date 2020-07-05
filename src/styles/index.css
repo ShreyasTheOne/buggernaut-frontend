@@ -41,6 +41,11 @@
     color: #282c34;
 }
 
+.admin-header{
+    margin-top: 0px;
+    margin-bottom: 0px !important;
+}
+
 .my-button-text-size{
     font-size: 1rem;
 }
@@ -80,6 +85,10 @@
 /*RESPONSIFIED*/
 .dashboard-content{
     margin-top: 20px;
+}
+
+.dashboard-mobile-header, .dashboard-mobile-header-container{
+    display:None;
 }
 
 /*RESPONSIFIED*/
@@ -138,13 +147,29 @@
         margin-top: 0px !important;
         display: none !important;
     }
-    .my-content{
+    .my-content, .my-container, .my-container-inner{
         margin-left: 0px !important;
         margin-top: 0px !important;
     }
 
     .dashboard-content, .my-page-menu-container{
         margin-top: 0px !important;
+    }
+
+    .dashboard-mobile-header-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top:12px;
+        padding-bottom:10px;
+        box-shadow: 0px 15px 3px -16px #111;
+        /*border-bottom: 1px solid black;*/
+    }
+
+    .dashboard-mobile-header{
+        display:block;
+        align-self: center !important;
+
     }
 
     .my-page-cards-list{
@@ -155,5 +180,11 @@
     .admin-list-image{
         margin-right: 5px;
         margin-bottom: 3px;
+    }
+
+    .admin-header{
+        align-self: center;
+        margin-top: 10px !important;
+        margin-bottom: 0px !important;
     }
 }

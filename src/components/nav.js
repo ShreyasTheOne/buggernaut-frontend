@@ -98,9 +98,7 @@ class MyNavBar extends Component {
                     }
 
                     if(this.state.login_state){
-
                         return(
-
                                 <div className="my-nav"> {/* nav.css */}
                                     <Link to="/dashboard" className="a"><div className='ui medium header buggernaut-title'>Buggernaut</div></Link> {/* nav.css */}
                                     <div className='my-icon-nav-links'> {/* nav.css */}

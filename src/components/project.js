@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import {Link} from 'react-router-dom';
-import {Divider, Popup, Button, Loader, Dropdown, Icon, Confirm} from "semantic-ui-react";
+import {Divider, Popup, Button, Loader, Dropdown, Icon, Confirm, Segment} from "semantic-ui-react";
 import MyNavBar from "./nav";
 import CKEditor from '@ckeditor/ckeditor5-react';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
@@ -11,6 +11,7 @@ import ResolvedIssues from "./resolvedIssues";
 
 import '../styles/project.css';
 import ForbiddenMessage from "./forbiddenMessage";
+import MyUploadAdapter from "../uploadAdapter";
 
 class Project extends Component {
 
@@ -19,6 +20,7 @@ class Project extends Component {
         project_found: null,
         project_name: null,
         project_wiki: null,
+        project_editor_id: null,
         project_id: null,
         project_deployed: false,
         deploy_loading: false,
@@ -36,6 +38,15 @@ class Project extends Component {
         wiki_save_loading: false,
         wiki_saved: false,
         wiki_save_failed: false,
+        isMobile: (window.innerWidth <= 480),
+    }
+
+    onWindowResize(){
+        this.setState({ veryMobile: window.innerWidth <= 410 });
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
     }
 
     getProjectInfo(){
@@ -75,6 +86,7 @@ class Project extends Component {
                     project_members_enrolment_number_list: mem_nums,
                     project_members_id_list: mem_ids,
                     project_found: true,
+                    project_editor_id: data[0]["editorID"],
                     project_deployed: data[0]["deployed"],
                     project_name: data[0]["title"],
                     project_wiki: data[0]["wiki"],
@@ -90,6 +102,7 @@ class Project extends Component {
     }
 
     componentDidMount() {
+        window.addEventListener('resize', this.onWindowResize.bind(this));
         this.getProjectInfo();
 
         axios({
@@ -164,7 +177,22 @@ class Project extends Component {
         }).catch( (e) => {
             alert(e);
         });
-    }
+
+        const deleteData = new FormData();
+        deleteData.append('editorID', this.state.project_editor_id )
+        deleteData.append('urls', this.state.editor_images)
+
+        axios({
+            url:"/images/deleteRem/",
+            method:"post",
+            data: deleteData,
+            withCredentials: true,
+        }).then((response)=>{
+            // console.log("DELETE DATA")
+            // console.log(response);
+        }).catch((e) => {
+            console.log(e);
+        });    }
 
     updateTeamMembers(){
         let members = this.state.project_members_id_list;
@@ -380,14 +408,28 @@ class Project extends Component {
                                             data={this.state.project_wiki}
                                             disabled={!this.isTeamMemberOrAdmin()}
                                             config={{resize_enabled: false}}
+                                            onInit={editor=>{
+                                                const editorID = this.state.project_editor_id
+                                                editor.plugins.get('FileRepository').createUploadAdapter = function(loader){
+                                                    return new MyUploadAdapter(loader, editorID);
+                                                }
+                                            }}
                                             onChange={ ( event, editor ) => {
                                                 const data = editor.getData();
+                                                const editor_images = Array.from( new DOMParser().parseFromString( editor.getData(), 'text/html' )
+                                                        .querySelectorAll( 'img' ) )
+                                                        .map( img => img.getAttribute( 'src' ) )
+                                                this.setState({
+                                                    project_wiki: editor.getData(),
+                                                    editor_images: editor_images,
+                                                });
                                                 this.updateWiki(data, this.state.project_id);
                                             } }
                                            />
                                     </div>
                                 </div>
 
+                                {!this.state.isMobile &&
                                 <div className="my-horizontal-div">
                                     <div className="team-members"> {/* project.css */}
                                         <div style={{alignSelf:"center"}}><div className={"ui big header"} style={{ marginRight:"10px"}}>Team:</div></div>
@@ -429,7 +471,55 @@ class Project extends Component {
                                             </Popup.Content>
                                         </Popup>
                                         }
-                                </div>
+                                </div>}
+
+                                {this.state.isMobile &&
+                                    (
+                                        <Segment>
+                                            <div className="my-horizontal-div">
+                                                <div style={{alignSelf:"center"}}><div className={"ui big header"} style={{ marginRight:"10px"}}>Team</div></div>
+                                                {this.isTeamMemberOrAdmin() &&
+                                                    <Popup
+                                                        wide="very"
+                                                        position='bottom center'
+                                                        on="click"
+                                                        trigger={<i style={{cursor:"pointer", alignSelf:"flex-start"}} className="pencil icon"/>}
+                                                    >
+                                                        <Popup.Header>
+                                                            Select Team Members:
+                                                        </Popup.Header>
+                                                        <Popup.Content>
+                                                            <Dropdown id="team-select"
+                                                              placeholder='Members'
+                                                              fluid multiple search selection
+                                                              options={this.state.userList}
+                                                              defaultValue={this.state.project_members_id_list}
+                                                              onChange={(event, data) =>{
+                                                                  // console.log(data.value);
+                                                                  this.setState({project_members_id_list: data.value });
+                                                              }}/>
+                                                            {(this.state.wiki_save_loading && <Button secondary loading/>) ||
+                                                              <Button floated="left" size={"small"} style={{marginTop:"30px"}} onClick={this.updateTeamMembers.bind(this)} secondary>Submit</Button>}
+                                                        </Popup.Content>
+                                                    </Popup>
+                                                }
+                                            </div>
+                                            <div style={{marginTop:"10px"}}>
+                                                {this.state.project_members.map((member, index) => {
+                                                        return (
+                                                                <div
+                                                                    key={index}
+                                                                    className={(member["is_superuser"] && "ui large black label member-label")||"ui large blue label member-label"}> {/* project.css */}
+                                                                        {member["full_name"]}
+                                                                </div>
+                                                            )
+                                                    })
+                                                }
+                                            </div>
+                                        </Segment>
+                                    )
+                                }
+
 
                                 {this.state.got_response && this.state.got_user &&
                                     <PendingIssues

@@ -1,9 +1,20 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Divider, Button, Table, Loader, Card, Image, Confirm} from 'semantic-ui-react';
+import {
+    Divider,
+    Button,
+    Table,
+    Loader,
+    Card,
+    Image,
+    Confirm,
+    Header,
+
+} from 'semantic-ui-react';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 
+import '../styles/admin.css';
 
 class AdminPage extends Component {
 
@@ -14,6 +25,7 @@ class AdminPage extends Component {
         status_loading_button: -1,
         ban_loading_button: -1,
         buttons_disabled: false,
+        selected_user: -1,
         isMobile: (window.innerWidth <= 480)
     }
 
@@ -63,13 +75,11 @@ class AdminPage extends Component {
         });
     }
 
-    userBanToggle(user_id){
-        let del = window.confirm("Are you sure?");
-        if(!del) return;
-
-        //ADD BAN USER FIELD
+    userBanToggle(){
+        let user_id = this.state.selected_user
         let url = "/users/"+user_id+"/toggleBan";
         this.setState({
+            banConfirmOpen: false,
             buttons_disabled: true,
             ban_loading_button: user_id,
         });
@@ -88,12 +98,12 @@ class AdminPage extends Component {
         });
     }
 
-    userStatusToggle(user_id){
-        let del = window.confirm("Are you sure?");
-        if(!del) return;
+    userStatusToggle(){
+        let user_id = this.state.selected_user;
 
         let url = "/users/"+user_id+"/toggleStatus";
         this.setState({
+            adminConfirmOpen: false,
             buttons_disabled: true,
             status_loading_button: user_id,
         });
@@ -119,6 +129,7 @@ class AdminPage extends Component {
             return(
                 <div className="my-page">
                     <MyNavBar/>
+
                     <div className="my-container">
                         <div className='my-container-inner'>
                             <div className="ui secondary vertical large menu left-menu-list">
@@ -152,11 +163,24 @@ class AdminPage extends Component {
             return (
                 <div className="my-page">
                     <MyNavBar/>
-
+                    <Confirm
+                        open={this.state.banConfirmOpen}
+                        onCancel={() => {}}
+                        onConfirm={() => {this.userBanToggle()}}
+                        cancelButton="No"
+                        confirmButton="Yes"
+                        />
+                    <Confirm
+                        open={this.state.adminConfirmOpen}
+                        onCancel={() => {}}
+                        onConfirm={() => {this.userStatusToggle()}}
+                        cancelButton="No"
+                        confirmButton="Yes"
+                        />
                     <div className="my-container">
                         <div className='my-container-inner'>
                             <div className="my-content">
-                                <div style={{marginBottom: "0px"}} className="ui large header">Admin Page</div>
+                                <div className="ui large header admin-header">Admin Page</div>{/* index.css */}
                                 <Divider/>
                                 {this.state.userList === null && <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>}
                                 {this.state.userList !== null &&
@@ -166,38 +190,50 @@ class AdminPage extends Component {
                                                 <Card
                                                     key={index}
                                                     fluid
+                                                    color={user["is_superuser"] ? "black" : "blue"}
                                                 >
                                                   <Card.Content>
-                                                      <Card.Header>
-                                                          <Image
-                                                              size={"mini"}
-                                                              circular
-                                                              alt="ProfilePicture"
-                                                              className="admin-list-image" //index.css
-                                                              src={user["display_picture"]}
-                                                          />
+                                                      <div className="admin-list-card"> {/* admin.css */}
+                                                          <div className="admin-list-card-left"> {/* admin.css */}
+                                                              <Image alt="ProfilePicture" circular size={"tiny"} src={user["display_picture"]}/>
+                                                          </div>
+                                                          <div className="admin-list-card-right"> {/* admin.css */}
 
-                                                              {user["full_name"]}
-                                                      </Card.Header>
-                                                      <Card.Meta>{(user["is_superuser"] && "Admin") || "User"}</Card.Meta>
-                                                      <Card.Description>
-                                                        <Button
-                                                            onClick={() => { this.userBanToggle(user["pk"]); }}
-                                                            disabled={this.state.buttons_disabled}
-                                                            loading={this.state.ban_loading_button === user["pk"]}
-                                                            color={ user["banned"] ? "green" : "red"}
-                                                            content={ user["banned"] ? "Enable" : "Disable"}
-                                                            size={"small"}
-                                                        />
-                                                        <Button
-                                                            onClick={() => {this.userStatusToggle(user["pk"]);}}
-                                                            color={"blue"}
-                                                            disabled={this.state.buttons_disabled}
-                                                            loading={this.state.status_loading_button === user["pk"]}
-                                                            content={(user["is_superuser"]) ? "Demote to User" : "Promote to Admin"}
-                                                            size={"small"}
-                                                        />
-                                                      </Card.Description>
+                                                              <div className="admin-card-header">
+                                                                  <Header as="h4" style={{margin:"0px"}}>{user["full_name"]}</Header> {/* admin.css */}
+                                                                  {/*<Modal size={"large"} style={{width:"90%"}} closeIcon trigger={<Icon name={"edit"}/>}>*/}
+                                                                  {/*  <Modal.Header>{user["full_name"]}</Modal.Header>*/}
+                                                                  {/*  <Modal.Content>*/}
+                                                                  {/*    <Modal.Description style={{display:"flex", flexDirection:"column"}}>*/}
+                                                                  {/*      <Checkbox label="Banned" style={{marginBottom:"5px"}}/>*/}
+                                                                  {/*      <Checkbox label="Admin"/>*/}
+                                                                  {/*    </Modal.Description>*/}
+                                                                  {/*  </Modal.Content>*/}
+                                                                  {/*</Modal>*/}
+                                                              </div>
+                                                              {/*<span style={{fontWeight: "normal", fontSize:"0.9em"}}>{user["email"]}</span>*/}
+                                                              {user["banned"] && <span style={{marginBottom:"3px", fontWeight: "bolder", fontSize:"0.9em", color:"red"}}>Banned</span>}
+                                                              {!user["banned"] && <span style={{marginBottom:"3px", fontWeight: "bolder", fontSize:"0.9em", color:"blue"}}>{(user["is_superuser"]) ? 'Admin' : 'User'}</span>}
+                                                              <div className="my-horizontal-div">
+                                                                  <Button
+                                                                    onClick={() => {this.setState({ banConfirmOpen: true, selected_user: user["pk"]  })}}
+                                                                    disabled={this.state.buttons_disabled}
+                                                                    loading={this.state.ban_loading_button === user["pk"]}
+                                                                    color={ user["banned"] ? "green" : "red"}
+                                                                    content={ user["banned"] ? "Enable" : "Disable"}
+                                                                    size={"mini"}
+                                                                />
+                                                                <Button
+                                                                    onClick={() => {this.setState({ adminConfirmOpen: true, selected_user: user["pk"]  })}}
+                                                                    color={"blue"}
+                                                                    disabled={this.state.buttons_disabled}
+                                                                    loading={this.state.status_loading_button === user["pk"]}
+                                                                    content={(user["is_superuser"]) ? "Demote to User" : "Promote to Admin"}
+                                                                    size={"mini"}
+                                                                />
+                                                              </div>
+                                                            </div>
+                                                        </div>
                                                   </Card.Content>
                                                 </Card>
                                             );

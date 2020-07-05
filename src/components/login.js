@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../styles/login.css';
 import '../styles/nav.css';
-import {Button, Header, Image} from 'semantic-ui-react';
+import {Button, Image} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import axios from "axios";
 
@@ -24,6 +24,7 @@ class Login extends Component {
     }
 
     componentDidMount() {
+
          window.addEventListener('resize', this.onWindowResize.bind(this));
         axios({
            url: "/users/test/",

@@ -6,22 +6,29 @@ import axios from 'axios';
 import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import '../styles/form.css';
+import MyUploadAdapter from "../uploadAdapter";
 
 class AddIssue extends Component {
 
-    state={
-        projectsList: [],
-        tagsList: [],
-        tags_selected: [],
-        for_project: -1,
-        user_id: "caramel",
-        issue_subject: "",
-        issue_description: "",
-        issue_priority: 2,
-        charsTitle: 100,
-        submit_loading: false,
-        confirm_open: false,
+    constructor(props) {
+        super(props);
+        this.state={
+            editor_images:[],
+            editorID: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+            projectsList: [],
+            tagsList: [],
+            tags_selected: [],
+            for_project: -1,
+            user_id: "caramel",
+            issue_subject: "",
+            issue_description: "",
+            issue_priority: 2,
+            charsTitle: 100,
+            submit_loading: false,
+            confirm_open: false,
+        }
     }
+
 
     componentDidMount() {
 
@@ -112,6 +119,7 @@ class AddIssue extends Component {
         let priority = this.state.issue_priority;
         let reporter = this.state.user_id;
         let project = this.state.for_project;
+        let editor = this.state.editorID
 
        let tags = this.state.tags_selected;
 
@@ -136,6 +144,7 @@ class AddIssue extends Component {
                 priority: priority,
                 subject: subject,
                 tags: tags,
+                editorID: editor
             }
         }).then((response) =>{
             this.setState({
@@ -153,6 +162,21 @@ class AddIssue extends Component {
             });
             console.log(e);
             alert("Let's not go crazy with the text, words will do just fine :)");
+        });
+
+        const deleteData = new FormData();
+        deleteData.append('editorID', this.state.editorID)
+        deleteData.append('urls', this.state.editor_images)
+
+        axios({
+            url:"/images/deleteRem/",
+            method:"post",
+            data: deleteData,
+            withCredentials: true,
+        }).then((response)=>{
+            // console.log(response);
+        }).catch((e) => {
+            console.log(e);
         });
 
     }
@@ -194,7 +218,7 @@ class AddIssue extends Component {
                         <div className="my-content">
                             <div style={{marginTop: "20px"}}>
                                 <Header size="large" >Report an Issue</Header>
-                                <Divider></Divider>
+                                <Divider/>
                             </div>
 
                             <div className="form-content"> {/* index.css */}
@@ -230,11 +254,20 @@ class AddIssue extends Component {
                                         id="project-wiki"
                                         editor={InlineEditor}
                                         config={ {placeholder: 'Add a description for better understanding...'}}
+                                        onInit={editor=>{
+                                                const editorID = this.state.editorID
+                                                editor.plugins.get('FileRepository').createUploadAdapter = function(loader){
+                                                    return new MyUploadAdapter(loader, editorID);
+                                                }
+                                            }}
                                         onChange={ ( event, editor ) => {
-                                                const data = editor.getData();
+                                                const editor_images = Array.from( new DOMParser().parseFromString( editor.getData(), 'text/html' )
+                                                        .querySelectorAll( 'img' ) )
+                                                        .map( img => img.getAttribute( 'src' ) )
                                                 this.setState({
-                                                    issue_description: data
-                                                });
+                                                    issue_description: editor.getData(),
+                                                    editor_images: editor_images,
+                                                })
                                             } }
                                         />
                                 </div>
