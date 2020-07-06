@@ -1,5 +1,4 @@
-![Buggernaut Logo]
-(/src/assets/app_logo_with_name_white.png)
+![Buggernaut Logo](/src/assets/app_logo_with_name_white.png)
 **Buggernaut bridges the gap between you and the users of your app, providing a way for them to report any bugs they find in it**
 
 This is the repository for the **frontend** application of Buggernaut. Click [here](https://github.com/shreyasdoda/buggernaut-backend) to go to the backend repository.
