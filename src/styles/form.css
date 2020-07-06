@@ -24,6 +24,18 @@
     margin-top: 25px;
 }
 
+#image-preview{
+    display: none;
+    margin-top: 20px;
+    width: 100%;
+    flex-direction: row;
+}
+
+#image-preview__original-image{
+    max-width: 400px;
+    margin-right: 20px;
+}
+
 @media only screen and (max-width: 1250px){
     .form-content{
         width: 100%;
