@@ -75,7 +75,8 @@ class ResolvedIssues extends Component {
                 this.setState({
                     delete_loading: false
                 });
-                document.getElementById(view_id).remove();
+                window.location.reload()
+                // document.getElementById(view_id).remove();
             }
         }).catch( (e) => {
             alert(e);
