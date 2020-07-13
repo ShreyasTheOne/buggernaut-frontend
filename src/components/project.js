@@ -3,15 +3,13 @@ import axios from "axios";
 import {Link} from 'react-router-dom';
 import {Divider, Popup, Button, Loader, Dropdown, Icon, Confirm, Segment} from "semantic-ui-react";
 import MyNavBar from "./nav";
-import CKEditor from '@ckeditor/ckeditor5-react';
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
 import PendingIssues from "./pendingIssues";
 import ResolvedIssues from "./resolvedIssues";
 
 import '../styles/project.css';
 import ForbiddenMessage from "./forbiddenMessage";
-import MyUploadAdapter from "../uploadAdapter";
+import {Editor} from "@tinymce/tinymce-react";
 
 class Project extends Component {
 
@@ -376,9 +374,7 @@ class Project extends Component {
                                                 <p className="my-button-text-size">Report Bug</p>{/* index.css */}
                                             </Button>
                                         </Link>
-
                                     </div>
-
                                     <Divider/>
                                 </div>
 
@@ -401,31 +397,88 @@ class Project extends Component {
                                     </div>}
                                 </div>
 
-                                <div className="project-detail-ckeditor"> {/* project.css */}
-                                    <div style={{maxHeight:"500px", overflowY:"auto"}}>
-                                        <CKEditor
-                                            editor={InlineEditor}
-                                            data={this.state.project_wiki}
-                                            disabled={!this.isTeamMemberOrAdmin()}
-                                            config={{resize_enabled: false}}
-                                            onInit={editor=>{
-                                                const editorID = this.state.project_editor_id
-                                                editor.plugins.get('FileRepository').createUploadAdapter = function(loader){
-                                                    return new MyUploadAdapter(loader, editorID);
-                                                }
-                                            }}
-                                            onChange={ ( event, editor ) => {
-                                                const data = editor.getData();
-                                                const editor_images = Array.from( new DOMParser().parseFromString( editor.getData(), 'text/html' )
-                                                        .querySelectorAll( 'img' ) )
-                                                        .map( img => img.getAttribute( 'src' ) )
-                                                this.setState({
-                                                    project_wiki: editor.getData(),
-                                                    editor_images: editor_images,
-                                                });
-                                                this.updateWiki(data, this.state.project_id);
-                                            } }
-                                           />
+                                <div className="project-detail-editor"> {/* project.css */}
+                                    <div className="project-detail-editor-inner">
+                                           <Editor
+                                               initialValue={this.state.project_wiki}
+                                                apiKey="0blvqqisiocr0gaootpb271thzo2qqtydxzdyba6ya9nihwr"
+                                                init={{
+                                                    plugins:
+                                                      ' lists link table image codesample emoticons code charmap ' +
+                                                      ' fullscreen ' +
+                                                      ' wordcount',
+                                                    contextmenu:
+                                                      'bold italic underline strikethrough | ' +
+                                                      'superscript subscript | ' +
+                                                      'link',
+                                                    toolbar1:
+                                                      'formatselect | ' +
+                                                      'bold italic underline strikethrough blockquote removeformat | ' +
+                                                      'alignleft aligncenter alignright alignjustify',
+                                                    toolbar2:
+                                                      'undo redo | ' +
+                                                      'bullist numlist outdent indent | ' +
+                                                      'link unlink | ' +
+                                                      'table image codesample charmap | ' +
+                                                      'fullscreen',
+                                                    toolbar3:
+                                                      'fontselect fontsizeselect | emoticons',
+                                                    relative_urls : false,
+                                                    menubar: true,
+                                                    width: '100%',
+                                                    branding: false,
+                                                    body_id: "inline-editor-styling",
+                                                    codesample_languages: [
+                                                      {text: 'HTML/XML', value: 'markup'},
+                                                      {text: 'JavaScript', value: 'javascript'},
+                                                      {text: 'CSS', value: 'css'},
+                                                      {text: 'PHP', value: 'php'},
+                                                      {text: 'Ruby', value: 'ruby'},
+                                                      {text: 'Python', value: 'python'},
+                                                      {text: 'Java', value: 'java'},
+                                                      {text: 'C', value: 'c'},
+                                                      {text: 'C#', value: 'csharp'},
+                                                      {text: 'C++', value: 'cpp'},
+                                                      {text: 'Dart', value: 'dart'},
+                                                      {text: 'Go', value: 'go'},
+                                                  ],
+                                                    images_upload_handler: (blobInfo, success, failure, progress) => {
+                                                        const data = new FormData()
+                                                        data.append('editorID', this.editorID)
+                                                        data.append('url', blobInfo.blob())
+                                                        axios({
+                                                            url:"/images/",
+                                                            method:"post",
+                                                            data: data,
+                                                            withCredentials: true,
+                                                        }).then((response) =>{
+                                                            console.log(response);
+
+                                                            if (response.status < 200 || response.status >= 300) {
+                                                                failure('HTTP Error: ' + response.status);
+                                                            } else {
+                                                                success(response.data["url"])
+                                                            }
+                                                        }).catch((e) => {
+                                                            failure(e);
+                                                        });
+                                                    }
+                                                }}
+                                                disabled={!this.isTeamMemberOrAdmin()}
+                                                inline={true}
+
+                                                onEditorChange={(content) => {
+                                                    console.log(content)
+                                                    const editor_images = Array.from( new DOMParser().parseFromString( content, 'text/html' )
+                                                            .querySelectorAll( 'img' ) )
+                                                            .map( img => img.getAttribute( 'src' ) )
+                                                    this.setState({
+                                                        project_wiki: content,
+                                                        editor_images: editor_images,
+                                                    })
+                                                    this.updateWiki(content, this.state.project_id);
+                                                }}
+                                                    />
                                     </div>
                                 </div>
 

@@ -1,12 +1,9 @@
 import {Input, Button, Checkbox, Dropdown, Header, Confirm} from 'semantic-ui-react';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import React, { Component } from 'react';
+import {Editor} from "@tinymce/tinymce-react";
 import axios from 'axios';
 import '../styles/form.css';
-import MyUploadAdapter from "../uploadAdapter";
 import "cropperjs/dist/cropper.min.css";
-import Cropper from "cropperjs";
 
 class AddProject extends Component {
 
@@ -275,31 +272,84 @@ class AddProject extends Component {
 
 
                 <Header as={'h3'} style={{marginBottom:"5px"}}>Project wiki:</Header>
-                <div className="form-ckeditor-input"> {/* index.css*/}
-                    <CKEditor
-                        id="project-wiki"
-                        editor={InlineEditor}
-                        config={{
-                            placeholder: "Instructions on how to use the app...",
-                            height: "100px",
-                        }}
-                        onInit={editor=>{
-                                const editorID = this.state.editorID
-                                editor.plugins.get('FileRepository').createUploadAdapter = function(loader){
-                                    return new MyUploadAdapter(loader, editorID);
-                                }
-                            }}
-                        onChange={ ( event, editor ) => {
-                                const editor_imgs = Array.from( new DOMParser().parseFromString( editor.getData(), 'text/html' )
-                                        .querySelectorAll( 'img' ) )
-                                        .map( img => img.getAttribute( 'src' ) )
-                                this.setState({
-                                    project_wiki: editor.getData(),
-                                    editor_images: editor_imgs,
-                                })
-                            } }
+                <div className="form-editor-input"> {/* form.css*/}
+                    <Editor
+                        apiKey="0blvqqisiocr0gaootpb271thzo2qqtydxzdyba6ya9nihwr"
+                        init={{
+                            plugins:
+                              ' lists link table image codesample emoticons code charmap ' +
+                              ' fullscreen ' +
+                              ' wordcount',
+                            contextmenu:
+                              'bold italic underline strikethrough | ' +
+                              'superscript subscript | ' +
+                              'link',
+                            toolbar1:
+                              'formatselect | ' +
+                              'bold italic underline strikethrough blockquote removeformat | ' +
+                              'alignleft aligncenter alignright alignjustify',
+                            toolbar2:
+                              'undo redo | ' +
+                              'bullist numlist outdent indent | ' +
+                              'link unlink | ' +
+                              'table image codesample charmap | ' +
+                              'fullscreen',
+                            toolbar3:
+                              'fontselect fontsizeselect | emoticons',
+                            relative_urls : false,
+                            menubar: true,
+                            branding: false,
+                            height: 450,
+                            width: '100%',
+                            codesample_languages: [
+                              {text: 'HTML/XML', value: 'markup'},
+                              {text: 'JavaScript', value: 'javascript'},
+                              {text: 'CSS', value: 'css'},
+                              {text: 'PHP', value: 'php'},
+                              {text: 'Ruby', value: 'ruby'},
+                              {text: 'Python', value: 'python'},
+                              {text: 'Java', value: 'java'},
+                              {text: 'C', value: 'c'},
+                              {text: 'C#', value: 'csharp'},
+                              {text: 'C++', value: 'cpp'},
+                              {text: 'Dart', value: 'dart'},
+                              {text: 'Go', value: 'go'},
+                          ],
+                            images_upload_handler: (blobInfo, success, failure, progress) => {
+                                const data = new FormData()
+                                data.append('editorID', this.editorID)
+                                data.append('url', blobInfo.blob())
+                                axios({
+                                    url:"/images/",
+                                    method:"post",
+                                    data: data,
+                                    withCredentials: true,
+                                }).then((response) =>{
+                                    console.log(response);
 
-                        />
+                                    if (response.status < 200 || response.status >= 300) {
+                                        failure('HTTP Error: ' + response.status);
+                                    } else {
+                                        success(response.data["url"])
+                                    }
+                                }).catch((e) => {
+                                    failure(e);
+                                });
+                            }
+                        }}
+                        disabled={false}
+                        inline={false}
+                        onEditorChange={(content) => {
+                            console.log(content)
+                            const editor_images = Array.from( new DOMParser().parseFromString( content, 'text/html' )
+                                    .querySelectorAll( 'img' ) )
+                                    .map( img => img.getAttribute( 'src' ) )
+                            this.setState({
+                                project_wiki: content,
+                                editor_images: editor_images,
+                            })
+                        }}
+                            />
                 </div>
 
 

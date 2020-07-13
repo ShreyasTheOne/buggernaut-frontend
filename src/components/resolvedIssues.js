@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import {Header, Icon, Button, Accordion, Label, Loader} from "semantic-ui-react";
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
@@ -177,11 +175,12 @@ class ResolvedIssues extends Component {
                                                         <Accordion.Content active={this.state.issueActiveIndex === index}>
                                                           <div className="issue-content-div"> {/* issues.css */}
 
-                                                              <CKEditor
-                                                                editor={InlineEditor}
-                                                                data={issue["description"]}
-                                                                disabled={true}
-                                                               />
+                                                              <div
+                                                                className="issue-description" /* issues.css */
+                                                                dangerouslySetInnerHTML={{
+                                                                  __html: issue["description"],
+                                                                }}
+                                                              />
 
                                                               <div className="issue-meta-data"> {/* issues.css */}
                                                                   <div className="my-horizontal-div">

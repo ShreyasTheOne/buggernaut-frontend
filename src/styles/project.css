@@ -15,7 +15,12 @@
 }
 
 #project-title{
-    margin-bottom: 0px!important;
+    margin-bottom: 0px !important;
+}
+
+#inline-editor-styling{
+    margin: 10px !important;
+    padding: 10px !important;
 }
 
 /*RESPONSIFIED*/
@@ -24,15 +29,22 @@
     flex-direction: row;
     justify-content: space-between;
     margin-top: 15px;
-    width: 60%;
+    width: 70%;
 }
 
 /*RESPONSIFIED*/
-.project-detail-ckeditor{
-    width: 60%;
+.project-detail-editor{
+    width: 70%;
     border:1px solid #5f6062;
     border-radius: 5px;
     margin-top: 5px;
+}
+
+/* NO NEED TO BE RESPONSIFIED*/
+.project-detail-editor-inner{
+    max-height: 500px !important;
+    overflow-y: auto !important;
+    padding: 10px;
 }
 
 /*RESPONSIFIED*/

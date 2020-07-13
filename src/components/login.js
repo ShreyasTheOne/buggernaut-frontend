@@ -13,6 +13,7 @@ class Login extends Component {
 
     redirect(){
         window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:3000/onlogin&state=gottem";
+        // window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:4000/onlogin&state=gottem";
     }
 
     onWindowResize(){

@@ -36,6 +36,12 @@
     flex-direction: column;
 }
 
+.issue-description{
+    overflow-x: auto;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
 .issue-meta-data{
     display: flex;
     flex-direction: row;
