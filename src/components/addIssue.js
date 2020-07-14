@@ -16,6 +16,7 @@ class AddIssue extends Component {
             editor_images:[],
             editorID: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
             projectsList: [],
+            projectSlugs: {},
             tagsList: [],
             tags_selected: [],
             for_project: -1,
@@ -38,6 +39,7 @@ class AddIssue extends Component {
         }).then(
             (response) => {
                 let arr = [];
+                let brr = {};
                 const pl = response.data;
                 for(let project in pl){
                     let dict = {};
@@ -45,10 +47,12 @@ class AddIssue extends Component {
                     dict["value"] = pl[project]["id"];
                     dict["text"] = pl[project]["title"];
                     arr.push(dict);
+                    brr[pl[project]["id"]] = pl[project]["slug"];
                 }
 
                 this.setState({
                     projectsList: arr,
+                    projectSlugs: brr,
                     for_project: this.getProject()
                 });
             }
@@ -146,7 +150,7 @@ class AddIssue extends Component {
                submit_loading: false,
            });
             if(response["status"] === 201){
-                window.location = "http://localhost:3000/dashboard";
+                window.location = "http://localhost:3000/projects/"+this.state.projectSlugs[project];
             } else if (response["status"]===500){
                 alert(response["status"]);
             }
