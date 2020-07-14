@@ -4,6 +4,7 @@ import '../styles/nav.css';
 import {Button, Image} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import axios from "axios";
+import {urlAppOnLogin} from "../urls";
 
 class Login extends Component {
 
@@ -17,9 +18,7 @@ class Login extends Component {
     }
 
     redirect(){
-        // window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://192.168.0.106:3000/onlogin&state=gottem";
-        window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:3000/onlogin&state=gottem";
-        // window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:4000/onlogin&state=gottem";
+        window.location= `https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=${urlAppOnLogin()}&state=gottem`;
     }
 
 

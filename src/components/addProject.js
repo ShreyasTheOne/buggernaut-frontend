@@ -4,6 +4,14 @@ import {Editor} from "@tinymce/tinymce-react";
 import axios from 'axios';
 import '../styles/form.css';
 import "cropperjs/dist/cropper.min.css";
+import {
+    urlApiDeleteRemainingImages, urlApiImages,
+    urlApiProjects,
+    urlApiProjectVerifySlug,
+    urlApiUsers,
+    urlAppDashboardCurrentProjects,
+    urlAppDashboardDeployedProjects
+} from "../urls";
 
 class AddProject extends Component {
 
@@ -32,7 +40,7 @@ class AddProject extends Component {
     componentDidMount() {
 
         axios({
-            url: '/users',
+            url: urlApiUsers(),
             method: 'get',
             withCredentials: true
         }).then(
@@ -83,7 +91,7 @@ class AddProject extends Component {
         }
 
         if(!(value === "") ){
-            let url = '/projects/verify/?slug=' + slug;
+            let url = urlApiProjectVerifySlug(slug);
             axios({
                 method: 'get',
                 url:url,
@@ -208,7 +216,7 @@ class AddProject extends Component {
         });
 
         axios({
-            url: "/projects/",
+            url: urlApiProjects(),
             method: "post",
             withCredentials: "true",
             data: formData,
@@ -217,7 +225,7 @@ class AddProject extends Component {
                 submit_loading: false,
             });
             if(response["status"] === 201){
-                window.location = "http://localhost:3000/dashboard";
+                window.location = (projectDeployed) ? urlAppDashboardDeployedProjects() : urlAppDashboardCurrentProjects();
             } else{
                 alert(response["status"]);
             }
@@ -231,7 +239,7 @@ class AddProject extends Component {
         deleteData.append('urls', this.state.editor_images)
 
         axios({
-            url:"/images/deleteRem/",
+            url:urlApiDeleteRemainingImages(),
             method:"post",
             data: deleteData,
             withCredentials: true,
@@ -320,7 +328,7 @@ class AddProject extends Component {
                                 data.append('editorID', this.editorID)
                                 data.append('url', blobInfo.blob())
                                 axios({
-                                    url:"/images/",
+                                    url:urlApiImages(),
                                     method:"post",
                                     data: data,
                                     withCredentials: true,

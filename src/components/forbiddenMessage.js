@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import {Header} from "semantic-ui-react";
 import MyNavBar from "./nav";
+import {urlAppLogin} from "../urls";
 
 
 class ForbiddenMessage extends Component {
@@ -16,7 +17,7 @@ class ForbiddenMessage extends Component {
 
     componentDidMount() {
         if(this.state.message !== "project-not-found"){
-            setTimeout(() => {window.location= "http://localhost:3000/login"}, 5000);
+            setTimeout(() => {window.location= urlAppLogin()}, 5000);
         }
     }
 

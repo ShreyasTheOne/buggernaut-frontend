@@ -5,7 +5,15 @@ import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import '../styles/form.css';
 import {Editor} from "@tinymce/tinymce-react";
-import Dashboard from "./dashboard";
+import {
+    urlApiDeleteRemainingImages,
+    urlApiImages,
+    urlApiIssues,
+    urlApiProjects,
+    urlApiTags,
+    urlAppProjectDetail
+} from "../urls";
+
 
 class AddIssue extends Component {
 
@@ -33,7 +41,7 @@ class AddIssue extends Component {
     componentDidMount() {
 
         axios({
-            url: '/projects',
+            url: urlApiProjects(),
             method: 'get',
             withCredentials: true
         }).then(
@@ -61,7 +69,7 @@ class AddIssue extends Component {
         });
 
         axios({
-            url: '/tags',
+            url: urlApiTags(),
             method: "get",
             withCredentials: true
         }).then(
@@ -132,7 +140,7 @@ class AddIssue extends Component {
        });
 
         axios({
-            url: "/issues/",
+            url: urlApiIssues(),
             method: "post",
             withCredentials: "true",
 
@@ -150,7 +158,7 @@ class AddIssue extends Component {
                submit_loading: false,
            });
             if(response["status"] === 201){
-                window.location = "http://localhost:3000/projects/"+this.state.projectSlugs[project];
+                window.location = urlAppProjectDetail(this.state.projectSlugs[project]);
             } else if (response["status"]===500){
                 alert(response["status"]);
             }
@@ -169,7 +177,7 @@ class AddIssue extends Component {
         deleteData.append('urls', this.state.editor_images)
 
         axios({
-            url:"/images/deleteRem/",
+            url:urlApiDeleteRemainingImages(),
             method:"post",
             data: deleteData,
             withCredentials: true,
@@ -297,7 +305,7 @@ class AddIssue extends Component {
                                                 data.append('editorID', this.editorID)
                                                 data.append('url', blobInfo.blob())
                                                 axios({
-                                                    url:"/images/",
+                                                    url:urlApiImages(),
                                                     method:"post",
                                                     data: data,
                                                     withCredentials: true,

@@ -11,12 +11,22 @@ class Dashboard extends Component {
 
     constructor(props) {
         super(props);
+        let params = new URLSearchParams(window.location.search);
+        let display="current-projects";
+        if(params.get('display') !== null){
+            if(params.get('display') === "deployed-projects"){
+                display = "deployed-projects";
+            } else if(params.get('display') === "add-project"){
+                display = "add-project";
+            }
+        }
+
         let initial_state = this.props; //isMobile, user_data
         let append_state = {
             got_response: false,
             deployed_projects: null,
             current_projects: null,
-            activeMenuItem: "current-projects",
+            activeMenuItem: display,
             veryMobile: (window.innerWidth <= 410),
         }
         this.state = {...initial_state, ...append_state};

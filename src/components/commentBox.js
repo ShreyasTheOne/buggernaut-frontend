@@ -4,18 +4,19 @@ import {Button, Checkbox, Comment, Divider, Header, Input} from 'semantic-ui-rea
 import Moment from 'react-moment';
 import 'moment-timezone';
 import '../styles/commentBox.css';
+import {urlApiIssueComments, urlApiWSProjectComments} from "../urls";
 
 class CommentBox extends Component {
     constructor(props) {
         super(props);
         let initial_state = this.props; //issue_id, user_id, project_id
         let append_state = {comments_list: null, comment_text: null, comment_submit_loading:false, comment_error: false, comments_hide: false, };
-        this.commentSocket = new WebSocket("ws://127.0.0.1:8000/ws/projects/"+initial_state["project_id"]+"/comments/");
+        this.commentSocket = new WebSocket(urlApiWSProjectComments(initial_state["project_id"]));
         this.state = {...initial_state, ...append_state};
     }
 
     componentDidMount() {
-        let url = "/issues/"+this.state.issue_id+"/comments/";
+        let url = urlApiIssueComments(this.state.issue_id);
         axios({
             url: url,
             method: "get",

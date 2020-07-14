@@ -4,6 +4,7 @@ import {Header, Icon, Button, Accordion, Label, Loader} from "semantic-ui-react"
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
 import '../styles/issues.css';
+import {urlApiIssueDetail, urlApiProjectIssues, urlApiReopenResolveIssue} from "../urls";
 
 
 class ResolvedIssues extends Component {
@@ -26,7 +27,7 @@ class ResolvedIssues extends Component {
     }
 
     getIssuesList(){
-        let url = "/projects/"+this.state.project_id+"/issues/";
+        let url = urlApiProjectIssues(this.state.project_id);
         axios({
             method: "get",
             url: url,
@@ -41,7 +42,6 @@ class ResolvedIssues extends Component {
                         resolved.push(list[iss]);
                     }
                 }
-
                 this.setState({
                     resolved_issues: resolved,
                 });
@@ -65,7 +65,7 @@ class ResolvedIssues extends Component {
             delete_loading:true,
         });
 
-        let url = "/issues/"+issue_id+"/";
+        let url = urlApiIssueDetail(issue_id);
         axios({
             url:url,
             method: "delete",
@@ -97,7 +97,7 @@ class ResolvedIssues extends Component {
             });
         }
 
-        let url = "/issues/"+issue_id+"/resolve-or-reopen/";
+        let url = urlApiReopenResolveIssue(issue_id);
         // let user = this.state.user_id;
         axios({
             url:url,

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Card, Loader, Label} from "semantic-ui-react";
+import {urlApiIssuesAssignedToUser, urlAppProjectDetail} from "../urls";
 
 
 class MyAssignments extends Component {
@@ -20,7 +21,7 @@ class MyAssignments extends Component {
     }
 
     getIssuesList(){
-        let url = "/issues/?assigned_to=" + this.state.user_id;
+        let url = urlApiIssuesAssignedToUser(this.state.user_id);
         axios({
             url: url,
             method: "get",
@@ -56,7 +57,7 @@ class MyAssignments extends Component {
                         { this.state.issues.map( (issue, index) => {
                             return (
                                 <Card
-                                    href={"http://localhost:3000/projects/" + issue["project"]["slug"]}
+                                    href={urlAppProjectDetail(issue["project"]["slug"])}
                                     key={index}
                                     style={{
                                         borderLeftWidth: "3px",

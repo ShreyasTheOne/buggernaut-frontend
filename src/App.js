@@ -49,7 +49,7 @@ class App extends Component {
                         state: params.get('state'),
                     });
                 } else {
-                    alert('State incorrect!');
+                    // alert('State incorrect!');
                     this.setState({
                         login_state: "Not authenticated",
                     });
@@ -81,12 +81,11 @@ class App extends Component {
                     }
                 }).catch((e) => {
                     console.log(e);
-                    alert(e);
-                    // alert("Sorry, there was an error at the server :/")
+                    // alert(e);
+                    alert("Sorry, there was an error at the server :/")
                 });
             }
     }
-
 
     render() {
             if(this.state.login_state === null){
@@ -122,7 +121,7 @@ class App extends Component {
             }
 
             if(this.state.login_state === "allowed"){
-                // this.getUserData();
+
                 return (
 
                     <Router>

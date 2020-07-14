@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Link, Redirect} from 'react-router-dom';
 import {Button, Header, Icon, Image, Popup} from "semantic-ui-react";
 import '../styles/nav.css';
+import {urlApiUserLogout, urlAppAdmin, urlAppDashboard, urlAppLogin, urlAppMyPage} from "../urls";
 
 
 class MyNavBar extends Component {
@@ -12,21 +13,28 @@ class MyNavBar extends Component {
         //this.props container user_data, isMobile
 
         let data = this.props["user_data"]
-        if(data === null){
-            window.location.reload();
+        if(data === null || data === undefined){
+            this.setState({
+                enrolmentNumber: null,
+            })
+            
+            window.location.reload()
+            // window.location = urlAppDashboard()
+        } else {
+            this.setCookie('enrolment_number', data["enrolment_number"], 14)
+            this.state = {
+                isMobile: this.props["isMobile"],
+                user_banned: data["banned"],
+                enrolmentNumber: data["enrolment_number"],
+                user_name: data["full_name"],
+                user_id: data["id"],
+                user_img: data["display_picture"],
+                is_admin: data["is_superuser"],
+                reported_count: data["reported"],
+                resolved_count: data["resolved"],
+            }
         }
-        this.setCookie('enrolment_number', data["enrolment_number"], 14)
-        this.state = {
-            isMobile: this.props["isMobile"],
-            user_banned: data["banned"],
-            enrolmentNumber: data["enrolment_number"],
-            user_name: data["full_name"],
-            user_id: data["id"],
-            user_img: data["display_picture"],
-            is_admin: data["is_superuser"],
-            reported_count: data["reported"],
-            resolved_count: data["resolved"],
-        }
+
     }
 
     setCookie(cname, cvalue, exdays) {
@@ -52,12 +60,12 @@ class MyNavBar extends Component {
 
     logout(){
         axios({
-            url:"/users/logout_user/",
+            url:urlApiUserLogout(),
             method:"get",
             withCredentials: true,
         }).then((response) => {
             if(response.data["status"] === "logged_out"){
-                window.location = "http://localhost:3000/login";
+                window.location = urlAppLogin();
             }
         }).catch( (e) => {
             alert("Unable to logout.");
@@ -65,6 +73,11 @@ class MyNavBar extends Component {
     }
 
     render() {
+
+        if(this.state === null || this.state === undefined){
+            return null;
+        }
+
         return (
             <div className="my-nav"> {/* nav.css */}
                 <Link to="/dashboard" className="a">
@@ -103,13 +116,13 @@ class MyNavBar extends Component {
                         <Popup.Content>
                             <Button.Group fluid vertical basic attached={"bottom"}>
                                 <Button onClick={() => {
-                                    window.location = "http://localhost:3000/dashboard"
+                                    window.location = urlAppDashboard();
                                 }} icon labelPosition='left'>
                                     <Icon name='home'/>
                                     Dashboard
                                 </Button>
                                 <Button onClick={() => {
-                                    window.location = "http://localhost:3000/mypage"
+                                    window.location = urlAppMyPage();
                                 }} icon labelPosition='left'>
                                     <Icon name='user'/>
                                     My Page
@@ -117,7 +130,7 @@ class MyNavBar extends Component {
 
                                 {this.state.is_admin &&
                                 <Button onClick={() => {
-                                    window.location = "http://localhost:3000/admin"
+                                    window.location = urlAppAdmin();
                                 }} icon labelPosition='left'>
                                     <Icon name='chess king'/>
                                     Admin

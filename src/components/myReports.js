@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Card, Loader, Label,} from "semantic-ui-react";
 import 'moment-timezone';
 import '../styles/issues.css';
+import {urlApiIssuesReportedByUser, urlAppProjectDetail} from "../urls";
 
 class MyReports extends Component {
 
@@ -23,7 +24,7 @@ class MyReports extends Component {
 
     getIssuesList(){
 
-        let url = "/issues/?reported_by=" + this.state.user_id;
+        let url = urlApiIssuesReportedByUser(this.state.user_id);
 
         axios({
             url: url,
@@ -60,7 +61,7 @@ class MyReports extends Component {
                         { this.state.issues.map( (issue, index) => {
                             return (
                                 <Card
-                                    href={"http://localhost:3000/projects/" + issue["project"]["slug"]}
+                                    href={urlAppProjectDetail(issue["project"]["slug"])}
                                     key={index}
                                     style={{
                                         borderLeftWidth: "3px",

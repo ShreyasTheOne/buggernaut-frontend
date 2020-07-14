@@ -5,6 +5,7 @@ import CommentBox from "./commentBox";
 import Moment from "react-moment";
 import 'moment-timezone';
 import '../styles/issues.css';
+import {urlApiAssignIssue, urlApiIssueDetail, urlApiProjectIssues, urlApiReopenResolveIssue} from "../urls";
 
 class PendingIssues extends Component {
 
@@ -23,7 +24,6 @@ class PendingIssues extends Component {
         this.state = {...initial_state, ...append_state};
     }
 
-
     componentDidMount() {
         this.getIssuesList();
     }
@@ -41,7 +41,7 @@ class PendingIssues extends Component {
             alert("Please select a team member");
             return;
         }
-        let url = "/issues/"+issue_id+"/assign/?assign_to="+this.state.assign_to_member;
+        let url = urlApiAssignIssue(issue_id, this.state.assign_to_member)
 
         axios({
             url: url,
@@ -58,7 +58,7 @@ class PendingIssues extends Component {
     }
 
     getIssuesList(){
-        let url = "/projects/"+this.state.project_id+"/issues/";
+        let url = urlApiProjectIssues(this.state.project_id);
 
         axios({
             method: "get",
@@ -96,7 +96,9 @@ class PendingIssues extends Component {
             delete_loading:true,
             delete_confirm_open: false,
         });
-        let url = "/issues/"+issue_id+"/";
+
+        let url = urlApiIssueDetail(issue_id);
+
         axios({
             url:url,
             method: "delete",
@@ -127,7 +129,7 @@ class PendingIssues extends Component {
             });
         }
 
-        let url = "/issues/"+issue_id+"/resolve-or-reopen/";
+        let url = urlApiReopenResolveIssue(issue_id);
 
         axios({
             url:url,

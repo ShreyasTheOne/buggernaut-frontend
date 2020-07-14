@@ -10,6 +10,13 @@ import ResolvedIssues from "./resolvedIssues";
 import '../styles/project.css';
 import ForbiddenMessage from "./forbiddenMessage";
 import {Editor} from "@tinymce/tinymce-react";
+import {
+    urlApiDeleteRemainingImages, urlApiImages,
+    urlApiProjectById,
+    urlApiProjectBySlug,
+    urlApiProjectDeploy,
+    urlApiUsers
+} from "../urls";
 
 class Project extends Component {
 
@@ -41,7 +48,7 @@ class Project extends Component {
 
     getProjectInfo(){
         const name=  this.props.match.params.slug;
-        let url = "/projects/?slug="+name;
+        let url = urlApiProjectBySlug(name);
 
         axios({
            url: url,
@@ -92,7 +99,7 @@ class Project extends Component {
         this.getProjectInfo();
 
         axios({
-            url: '/users',
+            url: urlApiUsers(),
             method: 'get',
             withCredentials: true
         }).then(
@@ -131,7 +138,8 @@ class Project extends Component {
             return;
         }
 
-        let url = "/projects/"+id+"/";
+        let url = urlApiProjectById(id);
+
         this.setState({
             wiki_save_loading: true,
             wiki_saved: false,
@@ -165,8 +173,8 @@ class Project extends Component {
         deleteData.append('urls', this.state.editor_images)
 
         axios({
-            url:"/images/deleteRem/",
-            method:"post",
+            url: urlApiDeleteRemainingImages(),
+            method: "post",
             data: deleteData,
             withCredentials: true,
         }).then((response)=>{
@@ -174,7 +182,8 @@ class Project extends Component {
             // console.log(response);
         }).catch((e) => {
             console.log(e);
-        });    }
+        });
+    }
 
     updateTeamMembers(){
         let members = this.state.project_members_id_list;
@@ -248,7 +257,8 @@ class Project extends Component {
             deploy_confirm_open: false,
         });
 
-        let url = "/projects/"+this.state.project_id+"/deploy/"
+        let url = urlApiProjectDeploy(this.state.project_id);
+
         axios({
             url: url,
             method: "get",
@@ -431,7 +441,7 @@ class Project extends Component {
                                                         data.append('editorID', this.editorID)
                                                         data.append('url', blobInfo.blob())
                                                         axios({
-                                                            url:"/images/",
+                                                            url:urlApiImages(),
                                                             method:"post",
                                                             data: data,
                                                             withCredentials: true,

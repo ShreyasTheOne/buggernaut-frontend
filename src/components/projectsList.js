@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Card, Loader, Image} from "semantic-ui-react";
 import 'moment-timezone';
+import {urlApiProjectByDeployedState, urlAppProjectDetail} from "../urls";
 
 class ProjectsList extends Component {
 
@@ -29,11 +30,11 @@ class ProjectsList extends Component {
     }
 
     getProjectsList(){
-            let url="/projects/?deployed=";
+            let url="";
             if(this.state.project_status === "deployed"){
-                url+="true";
+                url=urlApiProjectByDeployedState("true");
             } else {
-                url+="false";
+                url=urlApiProjectByDeployedState("false");
             }
 
             axios({
@@ -48,9 +49,7 @@ class ProjectsList extends Component {
             ).catch( (e) => {
                 alert(e);
             });
-
     }
-
 
     render() {
 
@@ -70,7 +69,7 @@ class ProjectsList extends Component {
                     <Card.Group itemsPerRow={(this.state.isMobile) ? 1:4}> {/* CHANGE COLUMNS IN RESPONSIVE MODE*/}
                         { this.state.projects_list.map( (project, index) => {
                             return (
-                                <Card key={index} href={"http://localhost:3000/projects/" + project["slug"]}>
+                                <Card key={index} href={urlAppProjectDetail(project["slug"])}>
                                     <Image src={project["image"]} wrapped ui={false} />
                                   <Card.Content>
                                       <Card.Header>

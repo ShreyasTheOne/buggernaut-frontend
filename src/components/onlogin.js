@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Loader} from 'semantic-ui-react';
 import {Redirect, Router} from 'react-router-dom';
 import ForbiddenMessage from "./forbiddenMessage";
+import {urlApiUserOnLogin, urlAppLogin} from "../urls";
 
 class OnLogin extends Component {
 
@@ -20,7 +21,7 @@ class OnLogin extends Component {
         console.log(this.state.code);
             axios({
                 method:'post',
-                url: '/users/onlogin/',
+                url: urlApiUserOnLogin(),
                 headers:{
                     'Content-Type':'application/json',
                 },
@@ -29,12 +30,11 @@ class OnLogin extends Component {
                     code: this.state.code,
                 }
             }).then((response) => {
-
                 this.setState({
                     user_status: response.data["status"],
                 });
             }).catch( (e) => {
-                alert(e);
+                window.location = urlAppLogin();
             });
     }
 
@@ -45,9 +45,12 @@ class OnLogin extends Component {
                );
          }
 
+         if(this.state.user_status === "invalid token"){
+             return <Redirect to="/login" exact />;
+         }
+
          if(this.state.user_status === "user created" || this.state.user_status === "user exists"){
-             window.location.reload();
-             return <Redirect to="/dashboard" exact/>;
+             return <Redirect to="/login" exact/>;
          }
 
          if(this.state.user_status === "user not in IMG"){

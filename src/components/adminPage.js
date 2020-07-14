@@ -15,6 +15,7 @@ import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 
 import '../styles/admin.css';
+import {urlApiUsers, urlApiUserToggleBan, urlApiUserToggleStatus} from "../urls";
 
 class AdminPage extends Component {
     constructor(props) {
@@ -39,24 +40,9 @@ class AdminPage extends Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.onWindowResize.bind(this));
-        axios({
-            url:"/users/test/",
-            method: "get",
-            withCredentials: true,
-        }).then( (response) => {
-            if(response.data["is_superuser"]){
-                this.setState({
-                    is_admin: true
-                });
-                this.getUsers();
-            } else {
-                this.setState({
-                    is_admin: false
-                });
-            }
-        }).catch( (e) => {
-            alert(e);
-        } );
+        if(this.state.is_admin){
+            this.getUsers();
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -71,7 +57,7 @@ class AdminPage extends Component {
 
     getUsers(){
         axios({
-            url: '/users',
+            url: urlApiUsers(),
             method: 'get',
             withCredentials: true
         }).then(
@@ -87,7 +73,7 @@ class AdminPage extends Component {
 
     userBanToggle(){
         let user_id = this.state.selected_user
-        let url = "/users/"+user_id+"/toggleBan";
+        let url = urlApiUserToggleBan(user_id);
         this.setState({
             banConfirmOpen: false,
             buttons_disabled: true,
@@ -117,7 +103,7 @@ class AdminPage extends Component {
     userStatusToggle(){
         let user_id = this.state.selected_user;
 
-        let url = "/users/"+user_id+"/toggleStatus";
+        let url = urlApiUserToggleStatus(user_id);
         this.setState({
             adminConfirmOpen: false,
             buttons_disabled: true,
@@ -146,10 +132,6 @@ class AdminPage extends Component {
     }
 
     render() {
-
-        if(this.state.is_admin === null){
-            return(<div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>);
-        }
 
         if(this.state.is_admin === false){
             return(
@@ -184,11 +166,14 @@ class AdminPage extends Component {
                 </div>);
         }
 
+        if(this.state.userList === null){
+            return(<div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>);
+        }
 
         if(this.state.isMobile){
             return (
                 <div className="my-page">
-                    <MyNavBar/>
+                    <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
                     <Confirm
                         open={this.state.banConfirmOpen}
                         onCancel={() => {}}
@@ -276,7 +261,7 @@ class AdminPage extends Component {
 
         return (
             <div className="my-page">
-                <MyNavBar/>
+                <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
                 <Confirm
                     id="disable-enable-confirm"
                     open={this.state.disable_enable_confirm_open}
