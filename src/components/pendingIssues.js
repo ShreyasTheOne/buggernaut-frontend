@@ -18,9 +18,6 @@ class PendingIssues extends Component {
             resolve_loading: false,
             delete_loading: false,
             assign_to_member: null,
-            // assign_confirm_open: false,
-            // delete_confirm_open: false,
-            // reopen_resolve_confirm_open: false,
             priority_colors: ["black", "#E30F00", "#FFAA00", "#95C200"] //#9FCC2E
         };
         this.state = {...initial_state, ...append_state};

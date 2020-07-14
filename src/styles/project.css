@@ -5,6 +5,7 @@
     flex-direction: row;
     align-content: flex-end;
     justify-content: space-between;
+    overflow-x: auto;
 }
 
 .page-header-large{
@@ -12,6 +13,7 @@
     flex-direction: row;
     align-items: flex-end;
     margin-bottom: 0px;
+    /*overflow-x: auto;*/
 }
 
 #project-title{
@@ -61,7 +63,7 @@
 
 
 @media only screen and (max-width: 1250px){
-    .project-wiki-header-line, .project-detail-ckeditor{
+    .project-wiki-header-line, .project-detail-editor{
         width: 100%;
     }
 

@@ -7,25 +7,25 @@ class ProjectsList extends Component {
 
     constructor(props) {
         super(props);
-        let initial_state = this.props;
+        let initial_state = this.props; //isMobile, project_status
         let append_state ={
             projects_list: null,
-            isMobile: window.innerWidth <= 800,
         };
         this.state = {...initial_state, ...append_state};
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.onWindowResize.bind(this));
         this.getProjectsList();
     }
 
-    onWindowResize(){
-        this.setState({ isMobile: window.innerWidth <= 480 });
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize.bind(this));
+    componentDidUpdate(prevProps) {
+      if(this.props["isMobile"] !== prevProps["isMobile"])
+      {
+        this.setState({
+            ...this.state,
+            ...this.props
+        })
+      }
     }
 
     getProjectsList(){
@@ -40,7 +40,6 @@ class ProjectsList extends Component {
                 url: url,
                 method: 'get',
                 withCredentials: true,
-
             }).then((response) => {
                     this.setState({
                         projects_list: response.data,

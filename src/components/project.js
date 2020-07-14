@@ -13,38 +13,30 @@ import {Editor} from "@tinymce/tinymce-react";
 
 class Project extends Component {
 
-    state = {
-        user_id: null,
-        project_found: null,
-        project_name: null,
-        project_wiki: null,
-        project_editor_id: null,
-        project_id: null,
-        project_deployed: false,
-        deploy_loading: false,
-        deploy_confirm_open: false,
-        project_members: [],
-        project_members_enrolment_number_list:[],
-        project_members_id_list:[],
-        project_members_dropdown: [],
-        userList: [],
-        resolved_issues: null,
-        pending_issues: null,
-        got_response: false,
-        is_admin: false,
-        got_user: false,
-        wiki_save_loading: false,
-        wiki_saved: false,
-        wiki_save_failed: false,
-        isMobile: (window.innerWidth <= 480),
-    }
-
-    onWindowResize(){
-        this.setState({ veryMobile: window.innerWidth <= 410 });
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize.bind(this));
+    constructor(props){
+        super(props)
+        let initial_state = this.props; //user_data, is_admin, user_id, isMobile
+        let append_state = {
+            project_found: null,
+            project_name: null,
+            project_wiki: null,
+            project_editor_id: null,
+            project_id: null,
+            project_deployed: false,
+            deploy_loading: false,
+            deploy_confirm_open: false,
+            project_members: [],
+            project_members_enrolment_number_list:[],
+            project_members_id_list:[],
+            project_members_dropdown: [],
+            userList: [],
+            resolved_issues: null,
+            pending_issues: null,
+            wiki_save_loading: false,
+            wiki_saved: false,
+            wiki_save_failed: false,
+        }
+        this.state = {...initial_state, ...append_state};
     }
 
     getProjectInfo(){
@@ -89,32 +81,15 @@ class Project extends Component {
                     project_name: data[0]["title"],
                     project_wiki: data[0]["wiki"],
                     project_id: data[0]["id"],
-                    got_response: true
                 });
             }
-
-            // console.log(this.state)
         }).catch( (e) => {
             alert(e);
         });
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.onWindowResize.bind(this));
         this.getProjectInfo();
-
-        axios({
-            url: "/users/test/",
-            method: "get",
-            withCredentials: true,
-
-         }).then((response) => {
-             this.setState({
-                 is_admin: response.data["is_superuser"] ,
-                 user_id: response.data["pk"],
-                 got_user: true,
-            });
-         });
 
         axios({
             url: '/users',
@@ -138,7 +113,16 @@ class Project extends Component {
         ).catch( (e) => {
             alert(e);
         });
+    }
 
+    componentDidUpdate(prevProps) {
+      if(this.props["isMobile"] !== prevProps["isMobile"])
+      {
+        this.setState({
+            ...this.state,
+            ...this.props
+        })
+      }
     }
 
     updateWiki(data, id){
@@ -311,7 +295,7 @@ class Project extends Component {
                         onCancel={() => {this.setState({deploy_confirm_open: false,})}}
                         onConfirm={this.deploy.bind(this)}
                     />
-                    <MyNavBar/>
+                    <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
 
                     <div className="my-container">
                         <div className='my-container-inner'>
@@ -559,13 +543,13 @@ class Project extends Component {
                                             </div>
                                             <div style={{marginTop:"10px"}}>
                                                 {this.state.project_members.map((member, index) => {
-                                                        return (
-                                                                <div
-                                                                    key={index}
-                                                                    className={(member["is_superuser"] && "ui large black label member-label")||"ui large blue label member-label"}> {/* project.css */}
-                                                                        {member["full_name"]}
-                                                                </div>
-                                                            )
+                                                    return (
+                                                            <div
+                                                                key={index}
+                                                                className={(member["is_superuser"] && "ui large black label member-label")||"ui large blue label member-label"}> {/* project.css */}
+                                                                    {member["full_name"]}
+                                                            </div>
+                                                        )
                                                     })
                                                 }
                                             </div>
@@ -573,24 +557,19 @@ class Project extends Component {
                                     )
                                 }
 
+                                <PendingIssues
+                                        teamMemberOrAdmin={this.isTeamMemberOrAdmin()}
+                                        project_id={this.state.project_id}
+                                        projectMembersList={this.state.project_members_dropdown}
+                                        user_id={this.state.user_id}
+                                />
 
-                                {this.state.got_response && this.state.got_user &&
-                                    <PendingIssues
-                                            teamMemberOrAdmin={this.isTeamMemberOrAdmin()}
-                                            project_id={this.state.project_id}
-                                            projectMembersList={this.state.project_members_dropdown}
-                                            user_id={this.state.user_id}
-                                    />
-                                }
-
-                                {this.state.got_response && this.state.got_user &&
-                                    <ResolvedIssues
-                                            teamMemberOrAdmin={this.isTeamMemberOrAdmin()}
-                                            project_id={this.state.project_id}
-                                            projectMembersList={this.state.project_members_dropdown}
-                                            user_id={this.state.user_id}
-                                    />
-                                }
+                                <ResolvedIssues
+                                        teamMemberOrAdmin={this.isTeamMemberOrAdmin()}
+                                        project_id={this.state.project_id}
+                                        projectMembersList={this.state.project_members_dropdown}
+                                        user_id={this.state.user_id}
+                                />
 
                             </div>
 

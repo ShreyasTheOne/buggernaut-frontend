@@ -9,12 +9,17 @@ import AddProject from "./addProject";
 
 class Dashboard extends Component {
 
-    state = {
-        got_response: false,
-        deployed_projects: null,
-        current_projects: null,
-        activeMenuItem: "current-projects",
-        veryMobile: (window.innerWidth <= 410),
+    constructor(props) {
+        super(props);
+        let initial_state = this.props; //isMobile, user_data
+        let append_state = {
+            got_response: false,
+            deployed_projects: null,
+            current_projects: null,
+            activeMenuItem: "current-projects",
+            veryMobile: (window.innerWidth <= 410),
+        }
+        this.state = {...initial_state, ...append_state};
     }
 
     onWindowResize(){
@@ -27,41 +32,23 @@ class Dashboard extends Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.onWindowResize.bind(this));
-        axios({
-            url: "/projects/?deployed=false", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
-            method: 'get',
-            withCredentials: true,
+    }
 
-        }).then((response) => {
-                this.setState({
-                    current_projects: response.data ,
-                });
-            }
-        ).catch( (e) => {
-            alert(e);
-        });
-
-        axios({
-            url: "/projects/?deployed=true", //TEST TO SEE WHETHER AUTHORIZATION IS WORKING OR NOT, APPARENTLY NOT
-            method: 'get',
-            withCredentials: true,
-        }).then((response) => {
-                this.setState({
-                    deployed_projects: response.data,
-                });
-            }
-        ).catch( (e) => {
-            alert(e);
-        });
-
-
+    componentDidUpdate(prevProps) {
+      if(this.props["isMobile"] !== prevProps["isMobile"])
+      {
+        this.setState({
+            ...this.state,
+            ...this.props
+        })
+      }
     }
 
     render() {
 
         return (
             <div className="my-page">
-                <MyNavBar/>
+                <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
                 <div className="dashboard-mobile-header-container"><Header className="dashboard-mobile-header">Dashboard</Header></div>
                 <div className="my-container">
                     <div className='my-container-inner'>
@@ -112,9 +99,9 @@ class Dashboard extends Component {
                                         </Menu.Menu>
                                     </Menu>
 
-                                {this.state.activeMenuItem === "current-projects" && <ProjectsList project_status="current"/>}
-                                {this.state.activeMenuItem === "deployed-projects" && <ProjectsList project_status="deployed"/>}
-                                {this.state.activeMenuItem === "add-project" && <AddProject/>}
+                                {this.state.activeMenuItem === "current-projects" && <ProjectsList isMobile={this.state.isMobile} project_status="current"/>}
+                                {this.state.activeMenuItem === "deployed-projects" && <ProjectsList isMobile={this.state.isMobile} project_status="deployed"/>}
+                                {this.state.activeMenuItem === "add-project" && <AddProject isMobile={this.state.isMobile}/>}
 
                             </div>
 

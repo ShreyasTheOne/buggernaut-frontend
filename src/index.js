@@ -7,6 +7,7 @@ import 'semantic-ui-css/semantic.min.css';
 import './styles/index.css';
 
 axios.defaults.baseURL = 'http://localhost:8000';
+// axios.defaults.baseURL = 'http://192.168.0.106:8000';
 axios.defaults.xsrfCookieName = 'buggernaut_csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.withCredentials = true;

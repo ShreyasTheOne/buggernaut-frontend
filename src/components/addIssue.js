@@ -5,19 +5,20 @@ import MyNavBar from "./nav";
 import {Link} from "react-router-dom";
 import '../styles/form.css';
 import {Editor} from "@tinymce/tinymce-react";
+import Dashboard from "./dashboard";
 
 class AddIssue extends Component {
 
     constructor(props) {
         super(props);
         this.state={
+            ...this.props, //user_data, user_id, is_admin, isMobile
             editor_images:[],
             editorID: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
             projectsList: [],
             tagsList: [],
             tags_selected: [],
             for_project: -1,
-            user_id: "caramel",
             issue_subject: "",
             issue_description: "",
             issue_priority: 2,
@@ -81,20 +82,16 @@ class AddIssue extends Component {
         ).catch((e) => {
             alert(e);
         });
+    }
 
-         axios({
-            url: "/users/test/",
-            method: "get",
-            withCredentials: true,
-
-         }).then((response) => {
-            this.setState({
-                user_id: response.data["pk"],
-            });
-         }).catch((e) => {
-             alert(e);
-         });
-
+    componentDidUpdate(prevProps) {
+      if(this.props["isMobile"] !== prevProps["isMobile"])
+      {
+        this.setState({
+            ...this.state,
+            ...this.props
+        })
+      }
     }
 
     onSubjectChange() {
@@ -159,7 +156,8 @@ class AddIssue extends Component {
                submit_loading: false,
             });
             console.log(e);
-            alert("Let's not go crazy with the text, words will do just fine :)");
+            alert(e);
+            // alert("Let's not go crazy with the text, words will do just fine :)");
         });
 
         const deleteData = new FormData();
@@ -197,7 +195,7 @@ class AddIssue extends Component {
                     onCancel={() => {this.setState({confirm_open: false,})}}
                     onConfirm={this.submitForm.bind(this)}
                 />
-                <MyNavBar/>
+                <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
 
                 <div className="my-container">
                     <div className='my-container-inner'>

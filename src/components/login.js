@@ -6,46 +6,22 @@ import {Redirect} from 'react-router-dom';
 import axios from "axios";
 
 class Login extends Component {
-     state = {
-            login_state: null,
-            isMobile: (window.innerWidth <= 480)
-        }
+
+    constructor(props) {
+        super(props);
+        let initial_state = this.props; //isMobile
+        let append_state = {
+           isMobile: (window.innerWidth <= 480),
+        };
+        this.state = {...initial_state, ...append_state};
+    }
 
     redirect(){
+        // window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://192.168.0.106:3000/onlogin&state=gottem";
         window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:3000/onlogin&state=gottem";
         // window.location= "https://internet.channeli.in/oauth/authorise/?client_id=uj0edatgcr0kBx1OZECybxsXQZvDh63s2NSwE38t&redirect_url=http://localhost:4000/onlogin&state=gottem";
     }
 
-    onWindowResize(){
-        this.setState({ isMobile: window.innerWidth <= 480 });
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize.bind(this));
-    }
-
-    componentDidMount() {
-
-         window.addEventListener('resize', this.onWindowResize.bind(this));
-        axios({
-           url: "/users/test/",
-           method: "get",
-           withCredentials: true,
-        }).then((response) => {
-            if(response.data["enrolment_number"] === "Not authenticated"){
-               this.setState({
-                   login_state: false,
-               });
-           } else {
-               this.setState({
-                   login_state: true,
-               });
-           }
-        }).catch( (e) => {
-            alert(e);
-        });
-
-    }
 
     render(){
         if(this.state.login_state === null || this.state.login_state === false){

@@ -8,7 +8,6 @@ class MyReports extends Component {
 
     constructor(props) {
         super(props);
-        // console.log(this.props)
         let initial_state = this.props; //user_id
         let append_state = {
             issues: null,

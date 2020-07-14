@@ -17,16 +17,16 @@ import {Link} from "react-router-dom";
 import '../styles/admin.css';
 
 class AdminPage extends Component {
-
-
-    state = {
-        is_admin: null,
-        userList: null,
-        status_loading_button: -1,
-        ban_loading_button: -1,
-        buttons_disabled: false,
-        selected_user: -1,
-        isMobile: (window.innerWidth <= 480)
+    constructor(props) {
+        super(props);
+        this.state = {
+            ...this.props, //user_data, user_id, is_admin, isMobile
+            userList: null,
+            status_loading_button: -1,
+            ban_loading_button: -1,
+            buttons_disabled: false,
+            selected_user: -1,
+        }
     }
 
     onWindowResize(){
@@ -57,6 +57,16 @@ class AdminPage extends Component {
         }).catch( (e) => {
             alert(e);
         } );
+    }
+
+    componentDidUpdate(prevProps) {
+      if(this.props["isMobile"] !== prevProps["isMobile"])
+      {
+        this.setState({
+            ...this.state,
+            ...this.props
+        })
+      }
     }
 
     getUsers(){
@@ -90,7 +100,13 @@ class AdminPage extends Component {
         }).then((response) => {
             if(response.data["status"] === "Status updated"){
                 window.location.reload();
-            } else {
+            } else if(response.data["status"] === "You cannot change your own status!") {
+                this.setState({
+                    buttons_disabled: false,
+                    ban_loading_button: -1,
+                });
+                alert("You can't ban yourself, silly!");
+            }else {
                 alert(response.data["status"]);
             }
         }).catch((e)=>{
@@ -113,7 +129,17 @@ class AdminPage extends Component {
             method: "get",
             withCredentials: true,
         }).then((response) => {
-            window.location.reload();
+            if(response.data["status"] === "Role updated"){
+                window.location.reload();
+            } else if(response.data["status"] === "You cannot change your own status!") {
+                this.setState({
+                    buttons_disabled: false,
+                    status_loading_button: -1,
+                });
+                alert("You can't demote yourself, silly!");
+            }else {
+                alert(response.data["status"]);
+            }
         }).catch( (e) => {
             alert(e);
         });
@@ -128,7 +154,7 @@ class AdminPage extends Component {
         if(this.state.is_admin === false){
             return(
                 <div className="my-page">
-                    <MyNavBar/>
+                    <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
 
                     <div className="my-container">
                         <div className='my-container-inner'>

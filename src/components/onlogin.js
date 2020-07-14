@@ -1,23 +1,23 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Loader} from 'semantic-ui-react';
-import {Redirect} from 'react-router-dom';
-import queryString from 'query-string';
+import {Redirect, Router} from 'react-router-dom';
 import ForbiddenMessage from "./forbiddenMessage";
 
 class OnLogin extends Component {
 
-    state = {
-        user_found: false,
-        got_response: false,
-        user_banned: null,
+     constructor(props) {
+        super(props);
+        let initial_state = this.props; //code, state
+        let append_state = {
+            user_status: null,
+        };
+        this.state = {...initial_state, ...append_state};
     }
 
-
     componentDidMount() {
-        let url = this.props.location.search;
-        let params = queryString.parse(url);
-        console.log(params['code']);
+
+        console.log(this.state.code);
             axios({
                 method:'post',
                 url: '/users/onlogin/',
@@ -26,54 +26,38 @@ class OnLogin extends Component {
                 },
                 withCredentials: true,
                 data:{
-                    code: params['code'],
+                    code: this.state.code,
                 }
             }).then((response) => {
 
-                //REMEMBER TO SET COOKIE AS ACCESS TOKEN -- NOPE NOT ANYMORE, USING SESSIONS
-                if(response.data["status"] === "user created") {
-                    this.setState({
-                        user_banned: false,
-                        user_found: true,
-                        got_response: true
-                    });
-                } else if(response.data["status"] === "user exists") {
-                    this.setState({
-                        user_banned: false,
-                        user_found: true,
-                        got_response: true
-                    });
-                } else if(response.data["status"] === "user not in IMG"){
-                    this.setState({
-                        user_banned: false,
-                        user_found: false,
-                        got_response: true
-                    });
-                } else if(response.data["status"] === "user banned"){
-                    this.setState({
-                       user_banned: true,
-                       got_response: true,
-                    });
-                }
+                this.setState({
+                    user_status: response.data["status"],
+                });
             }).catch( (e) => {
                 alert(e);
             });
     }
 
     render(){
-        if(this.state.got_response){
-          if(this.state.user_found){
-              return (<Redirect to="/dashboard" exact/>);
-          } else if (this.state.user_banned){
-              return ( <ForbiddenMessage message="banned"/> );
-          } else {
-              return ( <ForbiddenMessage message="alien"/> );
-          }
-        }else{
-           return(
-               <div className="my-loader-div"><Loader active/></div> // {/* index.css */}
-           );
-        }
+         if(this.state.user_status === null){
+             return(
+                   <div className="my-loader-div"><Loader active/></div> // {/* index.css */}
+               );
+         }
+
+         if(this.state.user_status === "user created" || this.state.user_status === "user exists"){
+             window.location.reload();
+             return <Redirect to="/dashboard" exact/>;
+         }
+
+         if(this.state.user_status === "user not in IMG"){
+             return ( <ForbiddenMessage message="alien"/> );
+         }
+
+         if(this.state.user_status === "user banned"){
+             return ( <ForbiddenMessage message="banned"/> );
+         }
+
     }
 }
  export default OnLogin;
