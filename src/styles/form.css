@@ -22,16 +22,24 @@
     margin-top: 25px;
 }
 
-#image-preview{
-    display: none;
+.image-crop-div{
+    width: fit-content !important;
+    height: fit-content !important;
     margin-top: 20px;
-    width: 100%;
-    flex-direction: row;
+    margin-bottom: 20px;
+    /*height: 300px !important;*/
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
 }
 
-#image-preview__original-image{
-    max-width: 400px;
-    margin-right: 20px;
+#original-image{
+    /*max-height: 300px;*/
+}
+
+#preview-cropped-image{
+    margin-top: 20px;
+    /*border: 5px solid black;*/
 }
 
 @media only screen and (max-width: 1250px){
