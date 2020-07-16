@@ -19,9 +19,30 @@ class PendingIssues extends Component {
             resolve_loading: false,
             delete_loading: false,
             assign_to_member: null,
+            enrolmentNumber: this.getCookie("enrolment_number"),
             priority_colors: ["black", "#E30F00", "#FFAA00", "#95C200"] //#9FCC2E
         };
         this.state = {...initial_state, ...append_state};
+    }
+
+    getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    isReporter(num){
+        return this.state.enrolmentNumber === num;
     }
 
     componentDidMount() {
@@ -212,11 +233,6 @@ class PendingIssues extends Component {
                                                       __html: issue["description"],
                                                     }}
                                                   />
-                                                {/*<CKEditor*/}
-                                                {/*    editor={InlineEditor}*/}
-                                                {/*    data={issue["description"]}*/}
-                                                {/*    disabled={true}*/}
-                                                {/*/>*/}
 
                                                 <div className="issue-meta-data"> {/* issues.css*/}
                                                     <div className="my-horizontal-div">
@@ -231,9 +247,9 @@ class PendingIssues extends Component {
                                                     </div>
 
 
-                                                    {this.state.teamMemberOrAdmin && <div className="issue-buttons-div">
+                                                    <div className="issue-buttons-div">
 
-                                                        <Popup
+                                                       {this.state.teamMemberOrAdmin &&  <Popup
                                                             wide="very"
                                                             position='bottom center'
                                                             on="click"
@@ -263,9 +279,9 @@ class PendingIssues extends Component {
                                                                   </Button>
 
                                                             </Popup.Content>
-                                                        </Popup>
+                                                        </Popup>}
 
-
+                                                        {(this.state.teamMemberOrAdmin || this.isReporter(issue["reported_by"]["enrolment_number"])) &&
                                                         <Button
                                                             className="issue-action-button"
                                                             positive
@@ -276,8 +292,9 @@ class PendingIssues extends Component {
                                                                 this.handleResolveReopen(issue["id"], "my-issue-pending-" + index, "resolve")
                                                             }}>
                                                             Resolve
-                                                        </Button>
+                                                        </Button>}
 
+                                                        {(this.state.teamMemberOrAdmin || this.isReporter(issue["reported_by"]["enrolment_number"])) &&
                                                         <Button
                                                             className="issue-action-button"
                                                             negative
@@ -288,8 +305,8 @@ class PendingIssues extends Component {
                                                                 this.handleIssueDelete(issue["id"], "my-issue-pending-" + index)
                                                             }}>
                                                             Delete
-                                                        </Button>
-                                                    </div>}
+                                                        </Button>}
+                                                    </div>
 
 
                                                 </div>

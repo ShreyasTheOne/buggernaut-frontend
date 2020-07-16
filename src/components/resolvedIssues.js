@@ -17,9 +17,33 @@ class ResolvedIssues extends Component {
             resolved_issues: null,
             reopen_loading: false,
             delete_loading: false,
+            enrolmentNumber: this.getCookie("enrolment_number"),
         };
         this.state = {...initial_state, ...append_state};
 
+    }
+
+    getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    isReporter(num){
+        // alert("num = " + num);
+        // alert("cookie = " + this.state.enrolmentNumber);
+        // alert(this.state.enrolmentNumber === num);
+        return this.state.enrolmentNumber === num;
     }
 
     componentDidMount() {
@@ -194,7 +218,7 @@ class ResolvedIssues extends Component {
                                                                           <span className="doer-name">{issue["resolved_by"]["full_name"]}</span>{/* issues.css */}
                                                                       </div>
                                                                   </div>
-                                                                  {this.state.teamMemberOrAdmin &&
+                                                                  {(this.state.teamMemberOrAdmin || this.isReporter(issue["reported_by"]["enrolment_number"]))&&
                                                                       <div className="issue-buttons-div">
                                                                           <Button
                                                                               className="issue-action-button"

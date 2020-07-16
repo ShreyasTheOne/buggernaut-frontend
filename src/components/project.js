@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import {Link} from 'react-router-dom';
+import {Editor} from "@tinymce/tinymce-react";
 import {Divider, Popup, Button, Loader, Dropdown, Icon, Confirm, Segment} from "semantic-ui-react";
-import MyNavBar from "./nav";
 
+import MyNavBar from "./nav";
 import PendingIssues from "./pendingIssues";
+import ForbiddenMessage from "./forbiddenMessage";
 import ResolvedIssues from "./resolvedIssues";
 
 import '../styles/project.css';
-import ForbiddenMessage from "./forbiddenMessage";
-import {Editor} from "@tinymce/tinymce-react";
+
 import {
     urlApiDeleteRemainingImages, urlApiImages,
     urlApiProjectById,
@@ -89,6 +90,11 @@ class Project extends Component {
                     project_wiki: data[0]["wiki"],
                     project_id: data[0]["id"],
                 });
+
+                document.getElementById("wiki-editor").addEventListener('blur', () => {
+                    // alert("updating")
+                    this.updateWiki(this.state.project_wiki, this.state.project_id);
+                });
             }
         }).catch( (e) => {
             alert(e);
@@ -120,6 +126,8 @@ class Project extends Component {
         ).catch( (e) => {
             alert(e);
         });
+
+
     }
 
     componentDidUpdate(prevProps) {
@@ -394,9 +402,11 @@ class Project extends Component {
                                 <div className="project-detail-editor"> {/* project.css */}
                                     <div className="project-detail-editor-inner">
                                            <Editor
-                                               initialValue={this.state.project_wiki}
+                                               id="wiki-editor"
+                                               initialValue={ `<div id="parent">${this.state.project_wiki}</div>`}
                                                 apiKey="0blvqqisiocr0gaootpb271thzo2qqtydxzdyba6ya9nihwr"
                                                 init={{
+                                                    content_css: '',
                                                     plugins:
                                                       ' lists link table image codesample emoticons code charmap ' +
                                                       ' fullscreen ' +
@@ -460,7 +470,6 @@ class Project extends Component {
                                                 }}
                                                 disabled={!this.isTeamMemberOrAdmin()}
                                                 inline={true}
-
                                                 onEditorChange={(content) => {
                                                     console.log(content)
                                                     const editor_images = Array.from( new DOMParser().parseFromString( content, 'text/html' )
@@ -470,7 +479,7 @@ class Project extends Component {
                                                         project_wiki: content,
                                                         editor_images: editor_images,
                                                     })
-                                                    this.updateWiki(content, this.state.project_id);
+                                                    // this.updateWiki(content, this.state.project_id);
                                                 }}
                                                     />
                                     </div>

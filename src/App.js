@@ -114,7 +114,6 @@ class App extends Component {
                                 <Login {...props} login_state={false} isMobile={this.state.isMobile} />
                             )}
                         />
-
                     </Switch>
                 </Router>);
                 // return <Login login_state={this.state.login_state} isMobile={this.state.isMobile}/> ;
@@ -169,6 +168,12 @@ class App extends Component {
                               )}
                             />
                             <Route path="/test" component={test}/>
+                            <Route
+                              path='/'
+                              render={(props) => (
+                                <Redirect to="/dashboard"/>
+                              )}
+                            />
                         </Switch>
                     </Router>
 

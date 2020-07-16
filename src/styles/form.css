@@ -23,10 +23,13 @@
 }
 
 .image-crop-div{
+    /*position: relative !important;*/
     width: fit-content !important;
     height: fit-content !important;
+    /*padding: 20px;*/
     margin-top: 20px;
     margin-bottom: 20px;
+    /*border: 1px solid #61dafb;*/
     /*height: 300px !important;*/
     align-items: flex-start;
     display: flex;
@@ -34,7 +37,10 @@
 }
 
 #original-image{
-    /*max-height: 300px;*/
+    /*display: block !important;*/
+    max-height: 300px !important;
+    /*width: auto !important;*/
+    /*height: auto !important;*/
 }
 
 #preview-cropped-image{

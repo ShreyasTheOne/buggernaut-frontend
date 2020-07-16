@@ -46,7 +46,10 @@
 .project-detail-editor-inner{
     max-height: 500px !important;
     overflow-y: auto !important;
-    padding: 10px;
+    /*padding: 10px;*/
+}
+#parent {
+    margin: 10px !important;
 }
 
 /*RESPONSIFIED*/

@@ -104,11 +104,11 @@ class MyNavBar extends Component {
                                         <span style={{
                                             fontWeight: "normal",
                                             fontSize: "0.9em"
-                                        }}>{this.state.reported_count} Bugs Reported</span>
+                                        }}>{this.state.reported_count} {(this.state.reported_count === 1) ? "Bug" : "Bugs"} Reported</span>
                                         <span style={{
                                             fontWeight: "normal",
                                             fontSize: "0.9em"
-                                        }}>{this.state.resolved_count} Bugs Resolved</span>
+                                        }}>{this.state.resolved_count} {(this.state.resolved_count === 1) ? "Bug" : "Bugs"} Resolved</span>
                                     </div>
                                 </div>
                             </div>

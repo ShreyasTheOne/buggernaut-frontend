@@ -13,6 +13,9 @@ import {
     urlAppDashboardDeployedProjects
 } from "../urls";
 
+// import Cropper from "react-easy-crop";
+// import 'react-easy-crop/react-easy-crop.css';
+
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import {
@@ -119,24 +122,6 @@ class AddProject extends Component {
 
     }
 
-    getCroppedImage(){
-        const imgSrc = this.state.imgSrc
-        if (imgSrc) {
-            const canvasRef = this.imagePreviewCanvasRef.current
-
-            const {imgSrcExt} =  this.state
-            const imageData64 = canvasRef.toDataURL('image/' + imgSrcExt)
-
-            const myFilename = this.state.project_name + "." + imgSrcExt;
-            // file to be uploaded
-            const myNewCroppedFile = base64StringToFile(imageData64, myFilename)
-            console.log("myNewCroppedFile")
-            console.log(myNewCroppedFile)
-            // return file
-            return myNewCroppedFile;
-        }
-    }
-
     verifyFile = (files) => {
         if (files && files.length > 0) {
             const currentFile = files[0]
@@ -153,38 +138,54 @@ class AddProject extends Component {
             return true
         }
     }
-
+    // ------------------------------------------------ REACT IMAGE CROP STARTS ------------------------------------------------------//
     handleImageLoad = (image) => {
         console.log(image)
+        this.imageRef = image;
     }
+    getCroppedImg(image, crop) {
+        const canvas = document.createElement('canvas');
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(
+          image,
+          crop.x * scaleX,
+          crop.y * scaleY,
+          crop.width * scaleX,
+          crop.height * scaleY,
+          0,
+          0,
+          crop.width,
+          crop.height
+        );
+
+        return new Promise((resolve, reject) => {
+            const imageData64 = canvas.toDataURL('image/' + this.state.imgSrcExt);
+            resolve(imageData64);
+        });
+      }
+
+    async makeClientCrop(crop) {
+        if (this.imageRef && crop.width && crop.height) {
+          const croppedImageUrl = await this.getCroppedImg(
+                this.imageRef,
+                crop,
+          );
+          console.log(croppedImageUrl);
+          this.setState({ croppedImageUrl });
+        }
+      }
 
     handleOnCrop = (crop) => {
         this.setState({crop: crop});
     }
 
     handleOnCropComplete = (crop, pixelCrop) => {
-        console.log(crop, pixelCrop);
-        const canvas = this.imagePreviewCanvasRef.current;
-        const ctx = canvas.getContext('2d');
-        const imgSrc = this.state.imgSrc;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-        // const scaleY = image.naturalHeight / image.height;
-        const image = new Image()
-        image.src = imgSrc
-        image.onload = function () {
-            ctx.drawImage(
-                image,
-                crop.x,
-                crop.y,
-                crop.width,
-                crop.height,
-                0,
-                0,
-                crop.width,
-                crop.height,
-            )
-        }
+       this.makeClientCrop(crop);
     }
 
     handleUploadImage = (e) => {
@@ -202,7 +203,9 @@ class AddProject extends Component {
 
                     this.setState({
                         imgSrc: myResult,
-                        imgSrcExt: extractImageFileExtensionFromBase64(myResult)
+                        imgSrcExt: extractImageFileExtensionFromBase64(myResult),
+                        crop: {aspect: 3/2, unit:"px"},
+                        croppedImageUrl: null,
                     })
                     // alert(this.state.imgSrc)
                     // alert(this.state.imgSrcExt)
@@ -246,16 +249,13 @@ class AddProject extends Component {
             return;
         }
 
-        // let projectImage = this.getCroppedImage();
         let projectImage;
-        // console.log("this.state.imgSrc")
-        // console.log(this.state.imgSrc)
-        if(this.state.imgSrc === null){
+        if(this.state.croppedImageUrl === null){
             let del = window.confirm("You have not uploaded an image, and a default image will be set." +
                 "\nAre you ready to continue?");
             if(!del){return;}
         } else {
-            projectImage = this.getCroppedImage();
+            projectImage = base64StringToFile(this.state.croppedImageUrl, projectName+"."+this.state.imgSrcExt);
         }
 
         // return;
@@ -452,7 +452,9 @@ class AddProject extends Component {
                             onImageLoaded={this.handleImageLoad}
                             onComplete={this.handleOnCropComplete}
                             />
-                        <canvas id="preview-cropped-image" ref={this.imagePreviewCanvasRef}/>
+                        {this.state.croppedImageUrl &&
+                              <img id={"preview-cropped-image"} alt="Crop" style={{ maxWidth: '100%' }} src={this.state.croppedImageUrl} />
+                           }
                     </div>
                 }
 
