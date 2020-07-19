@@ -11,11 +11,11 @@ import {
     Header,
 
 } from 'semantic-ui-react';
-import MyNavBar from "./nav";
+import MyNavBar from "../nav";
 import {Link} from "react-router-dom";
 
-import '../styles/admin.css';
-import {urlApiUsers, urlApiUserToggleBan, urlApiUserToggleStatus} from "../urls";
+import '../../styles/admin.css';
+import {urlApiUsers, urlApiUserToggleBan, urlApiUserToggleStatus} from "../../urls";
 
 class AdminPage extends Component {
     constructor(props) {

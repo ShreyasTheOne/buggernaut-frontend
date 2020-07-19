@@ -1,9 +1,9 @@
 import {Divider, Input, Button, Radio, Dropdown, Header, Confirm} from 'semantic-ui-react';
 import React, { Component } from 'react';
 import axios from 'axios';
-import MyNavBar from "./nav";
+import MyNavBar from "../nav";
 import {Link} from "react-router-dom";
-import '../styles/form.css';
+import '../../styles/form.css';
 import {Editor} from "@tinymce/tinymce-react";
 import {
     urlApiDeleteRemainingImages,
@@ -12,7 +12,7 @@ import {
     urlApiProjects,
     urlApiTags,
     urlAppProjectDetail
-} from "../urls";
+} from "../../urls";
 
 
 class AddIssue extends Component {

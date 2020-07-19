@@ -64,7 +64,7 @@ export function urlApiUsers() {
 }
 
 export function urlApiUserOnLogin() {
-  return `${urlApiBase()}/users/onlogin/`;
+  return `${urlApiBase()}/users/on_login/`;
 }
 
 export function urlApiUserLogout() {

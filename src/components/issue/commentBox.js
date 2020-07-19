@@ -3,8 +3,8 @@ import axios from 'axios';
 import {Button, Checkbox, Comment, Divider, Header, Input} from 'semantic-ui-react';
 import Moment from 'react-moment';
 import 'moment-timezone';
-import '../styles/commentBox.css';
-import {urlApiIssueComments, urlApiWSProjectComments} from "../urls";
+import '../../styles/commentBox.css';
+import {urlApiIssueComments, urlApiWSProjectComments} from "../../urls";
 
 class CommentBox extends Component {
     constructor(props) {

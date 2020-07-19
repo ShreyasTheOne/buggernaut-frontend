@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Card, Loader, Label,} from "semantic-ui-react";
-import 'moment-timezone';
-import '../styles/issues.css';
-import {urlApiIssuesReportedByUser, urlAppProjectDetail} from "../urls";
+import {Card, Loader, Label} from "semantic-ui-react";
+import {urlApiIssuesAssignedToUser, urlAppProjectDetail} from "../../urls";
 
-class MyReports extends Component {
+
+class MyAssignments extends Component {
 
     constructor(props) {
         super(props);
@@ -17,15 +16,12 @@ class MyReports extends Component {
         this.state = {...initial_state, ...append_state};
     }
 
-
     componentDidMount() {
         this.getIssuesList();
     }
 
     getIssuesList(){
-
-        let url = urlApiIssuesReportedByUser(this.state.user_id);
-
+        let url = urlApiIssuesAssignedToUser(this.state.user_id);
         axios({
             url: url,
             method: "get",
@@ -45,18 +41,18 @@ class MyReports extends Component {
     render() {
 
         if(this.state.issues === null){
-            return(<div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>);
+            return(<div className="my-loader-div"><Loader active/></div>); // {/* index.css */}
         }
 
         if(this.state.issues.length === 0){
             //SHOW NO ISSUES YET
             return (
-                <div className="ui big header none-available">No reports yet...</div> // {/* index.css */}
-             );
+                    <div className="ui big header none-available">No assignments yet...</div> // {/* index.css */}
+            );
         }
 
         return (
-                <div id="issues-reported-by-me" className="my-page-cards-list"> {/* index.css */}
+                <div id="issues-assigned-to-me" className="my-page-cards-list"> {/* index.css */}
                     <Card.Group>
                         { this.state.issues.map( (issue, index) => {
                             return (
@@ -80,7 +76,7 @@ class MyReports extends Component {
                                       <Card.Description>
                                         {issue["tags"].map((tag, index) => {
                                                return(
-                                                   <Label key={index} className="tag-label">{tag["name"]}</Label> // {/* issues.css */}
+                                                   <Label key={index} className="tag-label">{tag["name"]}</Label> // {/* index.css */}
                                                );
                                             } )}
                                       </Card.Description>
@@ -96,4 +92,4 @@ class MyReports extends Component {
     }
 }
 
-export default MyReports;
+export default MyAssignments;

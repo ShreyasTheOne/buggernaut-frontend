@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import '../styles/login.css';
-import '../styles/nav.css';
+import '../../styles/login.css';
+import '../../styles/nav.css';
 import {Button, Image} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 import axios from "axios";
-import {urlAppOnLogin} from "../urls";
+import {urlAppOnLogin} from "../../urls";
 
 class Login extends Component {
 
@@ -28,10 +28,10 @@ class Login extends Component {
                 return(
                         <div className="login-div">
                             <div className="login-content">
-                                <Image src={require("../assets/app_logo_with_name_white.png")}/>
+                                <Image src={require("../../assets/app_logo_with_name_white.png")}/>
                                 <Button onClick={this.redirect.bind(this)} inverted color={"violet"} className="login-button">
                                     <div className="my-horizontal-div">
-                                        <Image size={"mini"} src={require("../assets/op_logo.png")}/>
+                                        <Image size={"mini"} src={require("../../assets/op_logo.png")}/>
                                         <span className="login-button-text">Login through Omniport</span>
                                     </div>
                                 </Button>
@@ -43,12 +43,12 @@ class Login extends Component {
                     <div className="login-div">
                             <div className="login-content">
                                 <div className="vertical-logo-div">
-                                    <Image src={require("../assets/app_logo_white.png")}/>
-                                    <Image src={require("../assets/app_logo_only_name_white.png")}/>
+                                    <Image src={require("../../assets/app_logo_white.png")}/>
+                                    <Image src={require("../../assets/app_logo_only_name_white.png")}/>
                                 </div>
                                 <Button onClick={this.redirect.bind(this)} inverted color={"violet"} className="login-button">
                                     <div className="my-horizontal-div">
-                                        <Image size={"mini"} src={require("../assets/op_logo.png")}/>
+                                        <Image size={"mini"} src={require("../../assets/op_logo.png")}/>
                                         <span className="login-button-text">Login through Omniport</span>
                                     </div>
                                 </Button>

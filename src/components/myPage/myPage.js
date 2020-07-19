@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Header, Loader, Menu} from 'semantic-ui-react';
-import MyNavBar from "./nav";
+import MyNavBar from "../nav";
 import {Link} from "react-router-dom";
 import MyReports from "./myReports";
 import MyAssignments from "./myAssignments";
-import Dashboard from "./dashboard";
-
 
 
 class MyPage extends Component {

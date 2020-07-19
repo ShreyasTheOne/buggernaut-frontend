@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Card, Loader, Image} from "semantic-ui-react";
 import 'moment-timezone';
-import {urlApiProjectByDeployedState, urlAppProjectDetail} from "../urls";
+import {urlApiProjectByDeployedState, urlAppProjectDetail} from "../../urls";
 
 class ProjectsList extends Component {
 

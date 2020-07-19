@@ -4,12 +4,12 @@ import {Link} from 'react-router-dom';
 import {Editor} from "@tinymce/tinymce-react";
 import {Divider, Popup, Button, Loader, Dropdown, Icon, Confirm, Segment} from "semantic-ui-react";
 
-import MyNavBar from "./nav";
-import PendingIssues from "./pendingIssues";
-import ForbiddenMessage from "./forbiddenMessage";
-import ResolvedIssues from "./resolvedIssues";
+import MyNavBar from "../nav";
+import PendingIssues from "../issue/pendingIssues";
+import ForbiddenMessage from "../forbiddenMessage";
+import ResolvedIssues from "../issue/resolvedIssues";
 
-import '../styles/project.css';
+import '../../styles/project.css';
 
 import {
     urlApiDeleteRemainingImages, urlApiImages,
@@ -17,7 +17,7 @@ import {
     urlApiProjectBySlug,
     urlApiProjectDeploy,
     urlApiUsers
-} from "../urls";
+} from "../../urls";
 
 class Project extends Component {
 

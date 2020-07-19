@@ -2,7 +2,7 @@ import {Input, Button, Checkbox, Dropdown, Header, Confirm} from 'semantic-ui-re
 import React, { Component } from 'react';
 import {Editor} from "@tinymce/tinymce-react";
 import axios from 'axios';
-import '../styles/form.css';
+import '../../styles/form.css';
 
 import {
     urlApiDeleteRemainingImages, urlApiImages,
@@ -11,7 +11,7 @@ import {
     urlApiUsers,
     urlAppDashboardCurrentProjects,
     urlAppDashboardDeployedProjects
-} from "../urls";
+} from "../../urls";
 
 // import Cropper from "react-easy-crop";
 // import 'react-easy-crop/react-easy-crop.css';
@@ -21,8 +21,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import {
     base64StringToFile, downloadBase64File,
     extractImageFileExtensionFromBase64,
-    image64toCanvasRef
-} from "../imageCropperHelperFunctions";
+} from "../../imageCropperHelperFunctions";
 const imageMaxSize = 20000000 // bytes
 const acceptedFileTypes = 'image/png, image/jpg, image/jpeg';
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {return item.trim()});
@@ -452,9 +451,6 @@ class AddProject extends Component {
                             onImageLoaded={this.handleImageLoad}
                             onComplete={this.handleOnCropComplete}
                             />
-                        {this.state.croppedImageUrl &&
-                              <img id={"preview-cropped-image"} alt="Crop" style={{ maxWidth: '100%' }} src={this.state.croppedImageUrl} />
-                           }
                     </div>
                 }
 

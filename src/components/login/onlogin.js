@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import {Loader} from 'semantic-ui-react';
 import {Redirect, Router} from 'react-router-dom';
-import ForbiddenMessage from "./forbiddenMessage";
-import {urlApiUserOnLogin, urlAppLogin} from "../urls";
+import ForbiddenMessage from "../forbiddenMessage";
+import {urlApiUserOnLogin, urlAppLogin} from "../../urls";
 
 class OnLogin extends Component {
 

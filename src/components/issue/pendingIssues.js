@@ -4,8 +4,8 @@ import {Header, Icon, Button, Accordion, Popup, Dropdown, Label, Loader,} from "
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
 import 'moment-timezone';
-import '../styles/issues.css';
-import {urlApiAssignIssue, urlApiIssueDetail, urlApiProjectIssues, urlApiReopenResolveIssue} from "../urls";
+import '../../styles/issues.css';
+import {urlApiAssignIssue, urlApiIssueDetail, urlApiProjectIssues, urlApiReopenResolveIssue} from "../../urls";
 
 class PendingIssues extends Component {
 

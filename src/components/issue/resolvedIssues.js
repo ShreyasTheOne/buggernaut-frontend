@@ -3,8 +3,8 @@ import axios from 'axios';
 import {Header, Icon, Button, Accordion, Label, Loader} from "semantic-ui-react";
 import CommentBox from "./commentBox";
 import Moment from "react-moment";
-import '../styles/issues.css';
-import {urlApiIssueDetail, urlApiProjectIssues, urlApiReopenResolveIssue} from "../urls";
+import '../../styles/issues.css';
+import {urlApiIssueDetail, urlApiProjectIssues, urlApiReopenResolveIssue} from "../../urls";
 
 
 class ResolvedIssues extends Component {
