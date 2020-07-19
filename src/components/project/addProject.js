@@ -13,13 +13,10 @@ import {
     urlAppDashboardDeployedProjects
 } from "../../urls";
 
-// import Cropper from "react-easy-crop";
-// import 'react-easy-crop/react-easy-crop.css';
-
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import {
-    base64StringToFile, downloadBase64File,
+    base64StringToFile,
     extractImageFileExtensionFromBase64,
 } from "../../imageCropperHelperFunctions";
 const imageMaxSize = 20000000 // bytes
@@ -30,8 +27,6 @@ class AddProject extends Component {
 
     constructor(props) {
         super(props);
-        this.fileInputRef = React.createRef()
-        this.imagePreviewCanvasRef = React.createRef()
         this.state = {
             userList: [],
             editor_images: [],
@@ -45,7 +40,7 @@ class AddProject extends Component {
             slug_valid: true,
             imgSrc: null,
             imgSrcExt: null,
-            crop: {aspect: 3/2 , unit: "px",},
+            crop: {aspect: 3/2 , unit: "px", x:0, y:0, width:150, height:100},
             submit_loading: false,
             confirm_open: false,
             editorID: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -203,7 +198,7 @@ class AddProject extends Component {
                     this.setState({
                         imgSrc: myResult,
                         imgSrcExt: extractImageFileExtensionFromBase64(myResult),
-                        crop: {aspect: 3/2, unit:"px"},
+                        crop: {aspect: 3/2, unit:"px",  x:0, y:0, width:150, height:100},
                         croppedImageUrl: null,
                     })
                     // alert(this.state.imgSrc)
@@ -249,18 +244,19 @@ class AddProject extends Component {
         }
 
         let projectImage;
-        if(this.state.croppedImageUrl === null){
+        if(this.state.croppedImageUrl === null || this.state.croppedImageUrl === undefined){
             let del = window.confirm("You have not uploaded an image, and a default image will be set." +
                 "\nAre you ready to continue?");
             if(!del){return;}
         } else {
+            // alert(this.state.croppedImageUrl);
             projectImage = base64StringToFile(this.state.croppedImageUrl, projectName+"."+this.state.imgSrcExt);
         }
-
+        alert(projectImage)
         // return;
 
         let formData = new FormData();
-        if(projectImage !== null) formData.append('image', projectImage);
+        if(projectImage !== null && projectImage !== undefined) formData.append('image', projectImage);
         formData.append('title', projectName);
         formData.append('slug', projectSlug);
         formData.append('wiki', projectWiki);
