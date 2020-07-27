@@ -102,7 +102,6 @@ class AdminPage extends Component {
 
     userStatusToggle(){
         let user_id = this.state.selected_user;
-
         let url = urlApiUserToggleStatus(user_id);
         this.setState({
             adminConfirmOpen: false,
@@ -176,14 +175,14 @@ class AdminPage extends Component {
                     <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
                     <Confirm
                         open={this.state.banConfirmOpen}
-                        onCancel={() => {}}
+                        onCancel={() => {this.setState({banConfirmOpen: false})}}
                         onConfirm={() => {this.userBanToggle()}}
                         cancelButton="No"
                         confirmButton="Yes"
                         />
                     <Confirm
                         open={this.state.adminConfirmOpen}
-                        onCancel={() => {}}
+                        onCancel={() => {this.setState({adminConfirmOpen: false})}}
                         onConfirm={() => {this.userStatusToggle()}}
                         cancelButton="No"
                         confirmButton="Yes"
@@ -193,8 +192,8 @@ class AdminPage extends Component {
                             <div className="my-content">
                                 <div className="ui large header admin-header">Admin Page</div>{/* index.css */}
                                 <Divider/>
-                                {this.state.userList === null && <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>}
-                                {this.state.userList !== null &&
+                                {!this.state.userList && <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}><Loader active/></div>}
+                                {this.state.userList  &&
                                      <Card.Group>
                                         { this.state.userList.map( (user, index) => {
                                             return (
@@ -209,7 +208,6 @@ class AdminPage extends Component {
                                                               <Image alt="ProfilePicture" circular size={"tiny"} src={user["display_picture"]}/>
                                                           </div>
                                                           <div className="admin-list-card-right"> {/* admin.css */}
-
                                                               <div className="admin-card-header">
                                                                   <Header as="h4" style={{margin:"0px"}}>{user["full_name"]}</Header> {/* admin.css */}
                                                                   {/*<Modal size={"large"} style={{width:"90%"}} closeIcon trigger={<Icon name={"edit"}/>}>*/}
@@ -261,6 +259,20 @@ class AdminPage extends Component {
 
         return (
             <div className="my-page">
+                <Confirm
+                    open={this.state.banConfirmOpen}
+                    onCancel={() => {this.setState({banConfirmOpen: false})}}
+                    onConfirm={() => {this.userBanToggle()}}
+                    cancelButton="No"
+                    confirmButton="Yes"
+                    />
+                <Confirm
+                    open={this.state.adminConfirmOpen}
+                    onCancel={() => {this.setState({adminConfirmOpen: false})}}
+                    onConfirm={() => {this.userStatusToggle()}}
+                    cancelButton="No"
+                    confirmButton="Yes"
+                    />
                 <MyNavBar user_data={this.state.user_data} isMobile={this.state.isMobile}/>
                 <Confirm
                     id="disable-enable-confirm"
@@ -309,7 +321,7 @@ class AdminPage extends Component {
                                                 <Table.Cell>{(user["is_superuser"] && "Admin") || "User"}</Table.Cell>
                                                 <Table.Cell>
                                                         <Button
-                                                            onClick={() => { this.userBanToggle(user["pk"]); }}
+                                                            onClick={() => {this.setState({ banConfirmOpen: true, selected_user: user["pk"]  })}}
                                                             disabled={this.state.buttons_disabled}
                                                             loading={this.state.ban_loading_button === user["pk"]}
                                                             color={ user["banned"] ? "green" : "red"}
@@ -319,7 +331,7 @@ class AdminPage extends Component {
                                                 </Table.Cell>
                                                 <Table.Cell>
                                                         <Button
-                                                            onClick={() => {this.userStatusToggle(user["pk"]);}}
+                                                            onClick={() => {this.setState({ adminConfirmOpen: true, selected_user: user["pk"]  })}}
                                                             color={"blue"}
                                                             disabled={this.state.buttons_disabled}
                                                             loading={this.state.status_loading_button === user["pk"]}

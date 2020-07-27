@@ -252,7 +252,7 @@ class AddProject extends Component {
             // alert(this.state.croppedImageUrl);
             projectImage = base64StringToFile(this.state.croppedImageUrl, projectName+"."+this.state.imgSrcExt);
         }
-        alert(projectImage)
+        // alert(projectImage)
         // return;
 
         let formData = new FormData();
